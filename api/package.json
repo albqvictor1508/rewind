@@ -1,0 +1,45 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/app.ts",
+  "scripts": {
+    "dev": "tsx --env-file .env --watch src/app.ts",
+    "seed": "tsx --env-file .env src/db/seed.ts",
+    "build": "tsup src/app.ts",
+    "format": "biome format",
+    "test": "tsx --env-file .env src/test/index.test.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@biomejs/biome": "^2.3.0",
+    "aws4": "^1.13.2",
+    "axios": "^1.12.2",
+    "bcryptjs": "^3.0.2",
+    "drizzle-orm": "^0.44.7",
+    "drizzle-seed": "^0.3.1",
+    "express": "^5.1.0",
+    "fast-jwt": "^6.0.2",
+    "ioredis": "^5.8.2",
+    "nodemailer": "^7.0.10",
+    "openid-client": "^6.8.1",
+    "postgres": "^3.4.7",
+    "tsup": "^8.5.0",
+    "tsx": "^4.20.6",
+    "useragent": "^2.3.0",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@types/aws4": "^1.11.6",
+    "@types/express": "^5.0.4",
+    "@types/node": "^24.9.1",
+    "@types/nodemailer": "^7.0.3",
+    "chalk": "^5.6.2",
+    "drizzle-kit": "^0.31.5",
+    "envalid": "^8.1.0",
+    "typescript": "^5.9.3"
+  }
+}
