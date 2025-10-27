@@ -26,6 +26,11 @@ export namespace AuthModel {
     password: PASSWORD_SCHEMA,
   });
 
+  export const SIGNUP_STEP_1_SCHEMA = z.object({
+    username: USERNAME_SCHEMA,
+    email: z.email(),
+  });
+
   export const RESEND_CODE_SCHEMA = z.object({
     email: z.email(),
   });
@@ -34,4 +39,24 @@ export namespace AuthModel {
     email: z.email(),
     password: PASSWORD_SCHEMA
   })
+
+  export type GithubProfileData = {
+    sub: string,
+    nickname: string,
+    name: string,
+    picture: string,
+    updated_at: Date,
+  }
+
+  export type GoogleProfileData = {
+    sub: string,
+    given_name: string,
+    family_name: string,
+    nickname: string,
+    name: string,
+    picture: string,
+    updated_at: string,
+    email: string,
+    email_verified: boolean,
+  }
 }

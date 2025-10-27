@@ -11,8 +11,13 @@ import { movieRoutes } from "./modules/movies";
 export let readyNum = 0;
 export const app = express();
 
+const {
+  PORT,
+} = env;
+
 app.use(express.json())
-app.use(cors({ origin: "http://localhost:5173" }))
+app.use(cors())
+
 app.use(cookieParser())
 
 app.use("/users", userRoutes);
@@ -20,7 +25,7 @@ app.use("/auth", authRoutes);
 app.use("/movies", movieRoutes);
 app.use(healthRoute);
 
-app.listen(env.PORT, () => {
+app.listen(PORT, () => {
   readyNum = Date.now();
-  console.log(chalk.redBright(`Movies API running on ${env.PORT}`))
+  console.log(chalk.redBright(`Rewind API running on ${env.PORT}`))
 })

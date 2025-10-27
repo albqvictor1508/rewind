@@ -12,12 +12,13 @@ export const env = e.cleanEnv(process.env, {
   MINIO_ENDPOINT: e.str(),
   MINIO_BUCKET: e.str(),
 
-  JWT_SECRET: e.str(),
+  SECRET: e.str(),
 
   AUTH0_DOMAIN: e.str(),
   AUTH0_CLIENT_ID: e.str(),
   AUTH0_CLIENT_SECRET: e.str(),
   AUTH0_CALLBACK_URL: e.str(),
+  AUTH0_AUDIENCE: e.str(),
 
 
   SMTP_HOST: e.str(),
