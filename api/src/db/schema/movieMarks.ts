@@ -1,4 +1,4 @@
-import { pgTable, uuid, text } from "drizzle-orm/pg-core";
+import { pgTable, uuid, text, timestamp, boolean } from "drizzle-orm/pg-core";
 import { users } from "./users";
 import { movies } from "./movies";
 
@@ -16,5 +16,7 @@ export const movieMarks = pgTable("movie_marks", {
   movieId: uuid().notNull().references(
     () => movies.id
   ),
-  status: text({ enum: statusEnum }).notNull()
+  status: text({ enum: statusEnum }).notNull(),
+  createdAt: timestamp().defaultNow(),
+  isFavorite: boolean().default(false),
 })
