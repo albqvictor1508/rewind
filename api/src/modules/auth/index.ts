@@ -9,8 +9,6 @@ import { auth } from "src/config/auth";
 import { mail } from "src/common/mail";
 import { AuthModel } from "./model";
 import { env } from "src/common/env";
-import z from "zod";
-import chalk from "chalk";
 
 export const authRoutes = Router();
 
@@ -246,6 +244,18 @@ authRoutes.post(
 
 authRoutes.post(
   "/logout",
+  async (request, response) => {
+    response.clearCookie("movies_auth", {
+      httpOnly: true,
+      secure: true,
+    });
+
+    return response.status(200).json();
+  }
+);
+
+authRoutes.delete(
+  "/delete",
   async (request, response) => {
     //@ts-expect-error
     const { id: userId } = request.user;
