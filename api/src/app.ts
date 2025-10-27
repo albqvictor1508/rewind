@@ -7,30 +7,16 @@ import { healthRoute } from "./modules/health";
 import cors from "cors"
 import cookieParser from "cookie-parser"
 import { movieRoutes } from "./modules/movies";
-import { auth } from "express-openid-connect"
 
 export let readyNum = 0;
 export const app = express();
 
 const {
-  SECRET,
   PORT,
-  AUTH0_DOMAIN,
-  AUTH0_CLIENT_ID,
 } = env;
 
 app.use(express.json())
-app.use(cors({ origin: "http://localhost:5173" }))
-app.use(
-  auth({
-    authRequired: false,
-    auth0Logout: true,
-    secret: SECRET,
-    clientID: AUTH0_CLIENT_ID,
-    baseURL: `http://localhost:${PORT}`,
-    issuerBaseURL: AUTH0_DOMAIN
-  })
-)
+app.use(cors())
 
 app.use(cookieParser())
 

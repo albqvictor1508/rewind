@@ -9,15 +9,15 @@ import { auth } from "src/config/auth";
 import { mail } from "src/common/mail";
 import { AuthModel } from "./model";
 import { env } from "src/common/env";
+import z from "zod";
+import chalk from "chalk";
 
 export const authRoutes = Router();
 
 authRoutes.post(
   "/signup",
+  auth.validate(AuthModel.SIGNUP_STEP_1_SCHEMA),
   async (request, response) => {
-    const { error: parseError } = AuthModel.SIGNUP_SCHEMA.safeParse(request.body)
-    if (parseError) return response.status(400).json(parseError);
-
     const { username, email } = request.body;
     const [hasCredentialsTaken] = await db.select({
       id: users.id
@@ -46,72 +46,91 @@ authRoutes.post(
   }
 )
 
-authRoutes.get("/cb", async (request, response) => {
-  try {
-    const { code } = request.query;
-
-    if (!code || typeof code !== 'string') {
-      return response.status(400).json({ message: "Missing authorization code" });
-    }
-
-    const tokenResponse = await fetch(`https://${env.AUTH0_DOMAIN}/oauth/token`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({
-        grant_type: 'authorization_code',
-        client_id: env.AUTH0_CLIENT_ID,
-        client_secret: env.AUTH0_CLIENT_SECRET,
-        code: code,
-        redirect_uri: env.AUTH0_CALLBACK_URL,
-      })
-    });
-
-    const tokenData: any = await tokenResponse.json();
-    if (!tokenResponse.ok) {
-      throw new Error(tokenData.error_description || 'Failed to fetch token');
-    }
-
-    const userInfoResponse = await fetch(`https://${env.AUTH0_DOMAIN}/userinfo`, {
-      headers: { 'Authorization': `Bearer ${tokenData.access_token}` }
-    });
-
-    const userInfo: any = await userInfoResponse.json();
-    if (!userInfoResponse.ok) {
-      throw new Error('Failed to fetch user info');
-    }
-
-    let [user] = await db.select({ id: users.id, email: users.email }).from(users).where(eq(users.email, userInfo.email));
-
-    if (!user) {
-      const [newUser] = await db.insert(users).values({
-        email: userInfo.email,
-        name: userInfo.nickname || userInfo.name,
-        displayName: userInfo.name,
-        photo: userInfo.picture,
-        authId: userInfo.sub
-      }).returning({ id: users.id, email: users.email });
-      user = newUser;
-    }
-
-    if (!user) {
-      return response.status(500).json({ message: "Failed to create or find user." });
-    }
-
-    const token = auth.sign({ id: user.id, email: user.email });
-    response.cookie("movies_auth", token, { httpOnly: true, secure: true });
-
-    response.redirect("/");
-
-  } catch (error) {
-    console.error("Auth0 callback error:", error);
-    return response.status(500).json({ message: "Authentication failed." });
-  }
-}); authRoutes.post(
-  "/signup/:code",
+authRoutes.get(
+  "/cb",
   async (request, response) => {
-    const { error: parseError } = AuthModel.SIGNUP_SCHEMA.safeParse(request.body)
-    if (parseError) return response.status(400).json(parseError);
+    try {
+      const { code } = request.query;
 
+      if (!code || typeof code !== 'string') {
+        return response.status(400).json({ message: "Missing authorization code" });
+      }
+
+      const tokenResponse = await fetch(`https://${env.AUTH0_DOMAIN}/oauth/token`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+          grant_type: 'authorization_code',
+          client_id: env.AUTH0_CLIENT_ID,
+          client_secret: env.AUTH0_CLIENT_SECRET,
+          code: code,
+          redirect_uri: env.AUTH0_CALLBACK_URL,
+        })
+      });
+
+      const tokenData: any = await tokenResponse.json();
+      if (!tokenResponse.ok) {
+        throw new Error(tokenData.error_description || 'Failed to fetch token');
+      }
+
+      const userInfoResponse = await fetch(`https://${env.AUTH0_DOMAIN}/userinfo`, {
+        headers: { 'Authorization': `Bearer ${tokenData.access_token}` }
+      });
+
+      //@ts-expect-error
+      const userInfo: AuthModel
+        .GithubProfileData |
+        AuthModel
+        .GoogleProfileData = await userInfoResponse.json();
+      console.log(userInfo);
+
+      if (!userInfoResponse.ok) {
+        throw new Error('Failed to fetch user info');
+      }
+
+      const where = "email" in userInfo ? eq(users.email, userInfo.email) : eq(users.authId, userInfo.sub)
+
+      let [user] = await db.select(
+        { id: users.id, email: users.email }
+      )
+        .from(users)
+        .where(
+          or(where)
+        );
+
+      if (!user) {
+        const [newUser] = await db.insert(users).values({
+          //@ts-expect-error
+          email: userInfo.email ?? "",
+          name: userInfo.nickname || userInfo.name,
+          displayName: userInfo.name,
+          photo: userInfo.picture,
+          authId: userInfo.sub
+        }).returning({ id: users.id, email: users.email });
+        user = newUser;
+      }
+
+      if (!user) {
+        return response.status(500).json({ message: "Failed to create or find user." });
+      }
+
+      const token = auth.sign({ id: user.id, email: user.email });
+      response.cookie("movies_auth", token, { httpOnly: true, secure: true });
+
+      return response.json({ ok: true })
+
+    } catch (error) {
+      console.error("Auth0 callback error:", error);
+      return response.status(500).json({ message: "Authentication failed." });
+    }
+
+  }
+);
+
+authRoutes.post(
+  "/signup/:code",
+  auth.validate(AuthModel.SIGNUP_SCHEMA),
+  async (request, response) => {
     const { username, email, password } = request.body;
 
     const REDIS_KEY = `codes:${email}`;
@@ -177,9 +196,8 @@ authRoutes.get(
 
 authRoutes.post(
   "/code/resend",
+  auth.validate(AuthModel.RESEND_CODE_SCHEMA),
   async (request, response) => {
-    const { error: parseError } = AuthModel.RESEND_CODE_SCHEMA.safeParse(request.body);
-    if (parseError) return response.status(400).json(parseError);
     const { email } = request.body;
 
     const REDIS_KEY = `codes:${email}`
@@ -198,10 +216,8 @@ authRoutes.post(
 
 authRoutes.post(
   "/login",
+  auth.validate(AuthModel.LOGIN_SCHEMA),
   async (request, response) => {
-    const { error: parseError } = AuthModel.LOGIN_SCHEMA.safeParse(request.body);
-    if (parseError) return response.status(400).json(parseError);
-
     const { email, password } = request.body;
     const [user] = await db.select({
       id: users.id,

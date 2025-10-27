@@ -18,6 +18,7 @@ export const env = e.cleanEnv(process.env, {
   AUTH0_CLIENT_ID: e.str(),
   AUTH0_CLIENT_SECRET: e.str(),
   AUTH0_CALLBACK_URL: e.str(),
+  AUTH0_AUDIENCE: e.str(),
 
 
   SMTP_HOST: e.str(),

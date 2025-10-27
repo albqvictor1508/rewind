@@ -10,7 +10,8 @@ type OAuthProvider = 'google' | 'github';
 const {
   AUTH0_DOMAIN,
   AUTH0_CLIENT_ID,
-  AUTH0_CALLBACK_URL
+  AUTH0_CALLBACK_URL,
+  AUTH0_AUDIENCE
 } = env;
 
 export class AuthService {
@@ -25,9 +26,10 @@ export class AuthService {
     params.append('client_id', AUTH0_CLIENT_ID);
     params.append('redirect_uri', AUTH0_CALLBACK_URL);
     params.append('scope', 'openid profile email');
+    params.append('audience', AUTH0_AUDIENCE);
 
     if (provider) {
-      const connection = provider === 'google' ? 'google-oauth2' : 'github';
+      const connection = provider === 'google' ? 'google-oauth2' : 'GitHub';
       params.append('connection', connection);
     }
 
