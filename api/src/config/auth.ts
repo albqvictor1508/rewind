@@ -1,6 +1,7 @@
 import { createSigner, createVerifier } from "fast-jwt";
 import { env } from "src/common/env";
 import z from "zod";
+import { Request, Response, NextFunction } from "express";
 
 const { JWT_SECRET } = env
 
@@ -18,12 +19,42 @@ interface AuthOptions {
 }
 
 export const auth = {
-  verify(payload: AuthOptions) {
+  verify(token: string): AuthOptions | null {
     try {
-      AUTH_SCHEMA.parse(payload)
-      //@ts-expect-error
-      verifier(payload);
-    } catch (error) { }
+      const payload = verifier(token);
+      AUTH_SCHEMA.parse(payload);
+      return payload as AuthOptions;
+    } catch (error) {
+      return null;
+    }
   },
-  sign
+  sign,
+  authenticate(req: Request, res: Response, next: NextFunction) {
+    const NON_AUTH_ROUTES = [
+      "/health",
+      "/auth/signup",
+      "/auth/login",
+      "/auth/signup/:code",
+    ];
+
+    if (NON_AUTH_ROUTES.includes(req.path)) {
+      return next();
+    }
+
+    const token = req.cookies.movies_auth;
+
+    if (!token) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const user = auth.verify(token);
+
+    if (!user) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    // @ts-expect-error
+    req.user = user;
+    next();
+  }
 }
