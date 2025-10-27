@@ -28,7 +28,9 @@ export const auth = {
       return null;
     }
   },
+
   sign,
+
   authenticate(req: Request, res: Response, next: NextFunction) {
     const NON_AUTH_ROUTES = [
       "/health",
@@ -47,7 +49,7 @@ export const auth = {
       return res.status(401).json({ message: "Unauthorized" });
     }
 
-    const user = auth.verify(token);
+    const user = this.verify(token);
 
     if (!user) {
       return res.status(401).json({ message: "Unauthorized" });

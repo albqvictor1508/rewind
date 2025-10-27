@@ -10,7 +10,7 @@ export const userRoutes = Router();
 
 userRoutes.get(
   "/movies",
-  auth.authenticate, // TODO: create this middleware
+  auth.authenticate,
   async (request, response) => {
     // @ts-expect-error
     const { id: userId } = request.user;
@@ -36,7 +36,6 @@ userRoutes.get("/@me",
     if (!user) return response.status(400).json("Unknown User");
 
     return response.json(user);
-
   }
 )
 
@@ -46,21 +45,47 @@ userRoutes.get("/photo",
     //@ts-expect-error
     const { id: userId } = request.user;
 
-    const { route } = await Minio.genPresignedUrl(`${userId}`) //WARN: eu envio esse hash junto?
+    const { route, hash } = await Minio.genPresignedUrl(`${userId}`) //WARN: eu envio esse hash junto?
+
+    await db.update(users).set({
+      photo: hash
+    }).where(eq(users.id, userId));
 
     return response.json({ route });
   }
 )
+
 userRoutes.delete("/photo",
   auth.authenticate,
   async (request, response) => {
     //@ts-expect-error
     const { id: userId } = request.user;
 
-    const ok = await Minio.remove(`${userId}`) //WARN: eu envio esse hash junto?
+    const ok = await Minio.remove(`${userId}`)
+
+    if (ok) await db.update(users)
+      .set({ photo: '' })
+      .where(eq(users.id, userId))
 
     return response.json({ ok });
   }
 )
 
+userRoutes.put("/",
+  auth.authenticate,
+  async (request, response) => {
+
+  });
+
+userRoutes.delete("/",
+  auth.authenticate,
+  async (request, response) => {
+    //@ts-expect-error
+    const { id: userId } = request.user;
+
+    const { ok } = await UserService.softDeleteUser(userId);
+
+    return response.json({ ok });
+  }
+)
 

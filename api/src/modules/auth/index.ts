@@ -2,7 +2,6 @@ import { eq, or } from "drizzle-orm";
 import { Router } from "express";
 import { db } from "src/db/client";
 import { users } from "src/db/schema/users";
-import z from "zod";
 import bcrypt from "bcryptjs"
 import { UserService } from "./service";
 import { FIVE_MINUTES_IN_MS, redis } from "src/common/redis";
@@ -13,7 +12,7 @@ import { AuthModel } from "./model";
 export const authRoutes = Router();
 
 authRoutes.post(
-  "/auth/signup",
+  "/signup",
   async (request, response) => {
     const { error: parseError } = AuthModel.SIGNUP_SCHEMA.safeParse(request.body)
     if (parseError) return response.status(400).json(parseError);
@@ -47,7 +46,7 @@ authRoutes.post(
 )
 
 authRoutes.post(
-  "/auth/signup/:code",
+  "/signup/:code",
   async (request, response) => {
     const { error: parseError } = AuthModel.SIGNUP_SCHEMA.safeParse(request.body)
     if (parseError) return response.status(400).json(parseError);
@@ -84,7 +83,17 @@ authRoutes.post(
 )
 
 authRoutes.post(
-  "/auth/code/resend",
+  "/google",
+  async (
+    request,
+    response
+  ) => {
+
+  }
+)
+
+authRoutes.post(
+  "/code/resend",
   async (request, response) => {
     const { error: parseError } = AuthModel.RESEND_CODE_SCHEMA.safeParse(request.body);
     if (parseError) return response.status(400).json(parseError);
@@ -105,7 +114,7 @@ authRoutes.post(
 )
 
 authRoutes.post(
-  "/auth/login",
+  "/login",
   async (request, response) => {
     const { error: parseError } = AuthModel.LOGIN_SCHEMA.safeParse(request.body);
     if (parseError) return response.status(400).json(parseError);
