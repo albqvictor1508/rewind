@@ -11,4 +11,6 @@ export const users = pgTable("users", {
   password: text(),
   photo: text(),
   createdAt: timestamp().defaultNow(),
+  updatedAt: timestamp().$onUpdate(() => new Date()),
+  deletedAt: timestamp(),
 })

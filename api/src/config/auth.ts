@@ -1,7 +1,7 @@
 import { createSigner, createVerifier } from "fast-jwt";
 import { env } from "src/common/env";
 import z from "zod";
-import { Request, Response, NextFunction } from "express";
+import type { Request, Response, NextFunction } from "express";
 
 const { JWT_SECRET } = env
 
