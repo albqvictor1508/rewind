@@ -14,8 +14,8 @@ app.use(express.json())
 app.use(cors({ origin: "http://localhost:5173" }))
 app.use(cookieParser())
 
-app.use(userRoutes);
-app.use(authRoutes);
+app.use("/users", userRoutes);
+app.use("/auth", authRoutes);
 app.use(healthRoute);
 
 app.listen(env.PORT, () => {
