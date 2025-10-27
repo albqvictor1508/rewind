@@ -1,10 +1,3 @@
-<<<<<<< Updated upstream
-import { randomBytes } from "node:crypto";
-
-export class UserService {
-  public static genCode() {
-    return randomBytes(3).toString('hex').toUpperCase()
-=======
 import { eq } from "drizzle-orm";
 import { db } from "src/db/client";
 import { movieMarks } from "src/db/schema/movieMarks";
@@ -22,6 +15,5 @@ export class UserService {
       .orderBy(movieMarks.createdAt)
 
     return userMovies ?? [];
->>>>>>> Stashed changes
   }
 }
