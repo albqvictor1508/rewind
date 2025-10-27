@@ -3,11 +3,12 @@ import { Router } from "express";
 import { db } from "src/db/client";
 import { users } from "src/db/schema/users";
 import bcrypt from "bcryptjs"
-import { UserService } from "./service";
+import { AuthService } from "./service";
 import { FIVE_MINUTES_IN_MS, redis } from "src/common/redis";
 import { auth } from "src/config/auth";
 import { mail } from "src/common/mail";
 import { AuthModel } from "./model";
+import { env } from "src/common/env";
 
 export const authRoutes = Router();
 
@@ -34,7 +35,7 @@ authRoutes.post(
     const code = await redis.get(REDIS_KEY);
     if (code) return response.status(200).json("A code has been already sent to this email.");
 
-    const newCode = UserService.genCode();
+    const newCode = AuthService.genCode();
     await Promise.all([
       mail({ to: email, subject: "Seu código comédia", text: newCode }),
       redis.setex(REDIS_KEY, FIVE_MINUTES_IN_MS, JSON.stringify(newCode))
@@ -45,7 +46,67 @@ authRoutes.post(
   }
 )
 
-authRoutes.post(
+authRoutes.get("/cb", async (request, response) => {
+  try {
+    const { code } = request.query;
+
+    if (!code || typeof code !== 'string') {
+      return response.status(400).json({ message: "Missing authorization code" });
+    }
+
+    const tokenResponse = await fetch(`https://${env.AUTH0_DOMAIN}/oauth/token`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        grant_type: 'authorization_code',
+        client_id: env.AUTH0_CLIENT_ID,
+        client_secret: env.AUTH0_CLIENT_SECRET,
+        code: code,
+        redirect_uri: env.AUTH0_CALLBACK_URL,
+      })
+    });
+
+    const tokenData: any = await tokenResponse.json();
+    if (!tokenResponse.ok) {
+      throw new Error(tokenData.error_description || 'Failed to fetch token');
+    }
+
+    const userInfoResponse = await fetch(`https://${env.AUTH0_DOMAIN}/userinfo`, {
+      headers: { 'Authorization': `Bearer ${tokenData.access_token}` }
+    });
+
+    const userInfo: any = await userInfoResponse.json();
+    if (!userInfoResponse.ok) {
+      throw new Error('Failed to fetch user info');
+    }
+
+    let [user] = await db.select({ id: users.id, email: users.email }).from(users).where(eq(users.email, userInfo.email));
+
+    if (!user) {
+      const [newUser] = await db.insert(users).values({
+        email: userInfo.email,
+        name: userInfo.nickname || userInfo.name,
+        displayName: userInfo.name,
+        photo: userInfo.picture,
+        authId: userInfo.sub
+      }).returning({ id: users.id, email: users.email });
+      user = newUser;
+    }
+
+    if (!user) {
+      return response.status(500).json({ message: "Failed to create or find user." });
+    }
+
+    const token = auth.sign({ id: user.id, email: user.email });
+    response.cookie("movies_auth", token, { httpOnly: true, secure: true });
+
+    response.redirect("/");
+
+  } catch (error) {
+    console.error("Auth0 callback error:", error);
+    return response.status(500).json({ message: "Authentication failed." });
+  }
+}); authRoutes.post(
   "/signup/:code",
   async (request, response) => {
     const { error: parseError } = AuthModel.SIGNUP_SCHEMA.safeParse(request.body)
@@ -71,7 +132,7 @@ authRoutes.post(
         email,
         password: hashed
       }).returning({ id: users.id });
-    if (!user) return response.status(400).json("Error to create user.");
+    if (!user) return response.status(500).json("Error to create user.");
 
     const { id } = user;
     const token = auth.sign({ id, email })
@@ -82,15 +143,37 @@ authRoutes.post(
   }
 )
 
-authRoutes.post(
+authRoutes.get(
   "/google",
-  async (
-    request,
-    response
-  ) => {
+  async (_, response) => {
+    let url: string | null = null;
 
+    try {
+      url = await AuthService.authenticateWithProvider("google");
+    } catch (error) {
+      console.log(error)
+    }
+
+    if (!url) return response.status(500).json("Error to generate Oauth Google URL");
+    return response.redirect(url);
   }
-)
+);
+
+authRoutes.get(
+  "/github",
+  async (_, response) => {
+    let url: string | null = null;
+
+    try {
+      url = await AuthService.authenticateWithProvider("github");
+    } catch (error) {
+      console.log(error)
+    }
+
+    if (!url) return response.status(500).json("Error to generate Oauth Github URL");
+    return response.redirect(url);
+  }
+);
 
 authRoutes.post(
   "/code/resend",
@@ -102,7 +185,7 @@ authRoutes.post(
     const REDIS_KEY = `codes:${email}`
     if (await redis.exists(REDIS_KEY)) await redis.del(REDIS_KEY)
 
-    const code = UserService.genCode();
+    const code = AuthService.genCode();
 
     await Promise.all([
       mail({ to: email, subject: "Seu código comédia", text: code }),
@@ -141,8 +224,22 @@ authRoutes.post(
       secure: true,
     });
 
-    await mail({ to: email, subject: "Fez login viadinho!!" })
-
     return response.status(200).json()
   }
 )
+
+authRoutes.post(
+  "/logout",
+  async (request, response) => {
+    //@ts-expect-error
+    const { id: userId } = request.user;
+
+    const { ok } = await AuthService.softDeleteUser(userId)
+
+    response.clearCookie("movies_auth", {
+      httpOnly: true,
+      secure: true,
+    });
+    return response.status(200).json({ ok });
+  }
+);

@@ -17,17 +17,4 @@ export class UserService {
 
     return userMovies ?? [];
   }
-
-  public static async softDeleteUser(userId: string) {
-    const [result] = await db.update(users).set({
-      deletedAt: new Date(),
-    }).where(eq(users.id, userId)).returning({ id: users.id });
-
-    if (!result) return { ok: false };
-
-    return { ok: true }
-
-    //WARN: com isso era só criar um worker que a cada 30 dias +/- checasse se
-    //essa glr continua com o deletedAt
-  }
 }

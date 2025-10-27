@@ -1,12 +1,12 @@
 import { createSigner, createVerifier } from "fast-jwt";
 import { env } from "src/common/env";
-import z from "zod";
+import z, { type ZodSchema } from "zod";
 import type { Request, Response, NextFunction } from "express";
 
-const { JWT_SECRET } = env
+const { SECRET } = env
 
-const verifier = createVerifier({ key: JWT_SECRET })
-export const sign = createSigner({ key: JWT_SECRET, expiresIn: '15m' })
+const verifier = createVerifier({ key: SECRET })
+export const sign = createSigner({ key: SECRET, expiresIn: '15m' })
 
 const AUTH_SCHEMA = z.object({
   id: z.uuid(),
@@ -19,6 +19,26 @@ interface AuthOptions {
 }
 
 export const auth = {
+  validate(schema: ZodSchema) {
+    return (req: Request, res: Response, next: NextFunction) => {
+      try {
+        schema.parse({
+          body: req.body,
+          query: req.query,
+          params: req.params,
+        });
+        return next();
+      } catch (error) {
+        if (error instanceof z.ZodError) {
+          return res.status(400).json({
+            message: "Validation error",
+            errors: error.flatten(),
+          });
+        }
+        return res.status(500).json({ message: "Internal server error" });
+      }
+    };
+  },
   verify(token: string): AuthOptions | null {
     try {
       const payload = verifier(token);
