@@ -5,7 +5,7 @@ import { Logo } from "@/components/logo"
 import { FcGoogle } from "react-icons/fc"
 import { FaGithub } from "react-icons/fa6";
 
-export const Route = createFileRoute('/_auth/signin')({
+export const Route = createFileRoute('/_auth/signup')({
   component: RouteComponent
 })
 
@@ -17,13 +17,25 @@ export function RouteComponent() {
         <div className="flex flex-col items-center mt-12 grow">
           <div className="w-[500px] flex flex-col space-y-4">
             <div className="flex flex-col space-y-2">
-              <h2 className="text-zinc-200 text-4xl font-bold">Sign in</h2>
+              <h2 className="text-zinc-200 text-4xl font-bold">Sign up</h2>
               <p className="text-zinc-600 font-normal text-lg">
-                Sign in to your account to continue.
+                Create your account to continue.
               </p>
             </div>
 
             <form className="flex flex-col space-y-8">
+              <div className="flex flex-col space-y-2">
+                <label className="text-xl font-medium" htmlFor="username">
+                  Username
+                </label>
+                <Input
+                  type="text"
+                  id="username"
+                  className="p-5 font-normal text-lg"
+                  placeholder="Enter your username"
+                />
+              </div>
+
               <div className="flex flex-col space-y-2">
                 <label className="text-xl font-medium" htmlFor="email">
                   Email
@@ -46,16 +58,26 @@ export function RouteComponent() {
                   className="p-5 font-normal text-lg"
                   placeholder="Enter your password"
                 />
-                <Link to={'/change-password'} className="text-base font-normal w-full text-right text-zinc-400 cursor-pointer hover:text-zinc-300 transition">
-                  Forgot password?
-                </Link>
               </div>
+
+              <div className="flex flex-col space-y-2">
+                <label className="text-base font-medium" htmlFor="confirm-password">
+                  Confirm Password
+                </label>
+                <Input
+                  type="password"
+                  id="confirm-password"
+                  className="p-5 font-normal text-lg"
+                  placeholder="Confirm your password"
+                />
+              </div>
+
 
               <Button
                 type="submit"
                 className="p-6 bg-red-600 hover:bg-red-700 transition font-bold text-white text-base"
               >
-                Sign in
+                Sign up
               </Button>
             </form>
 
@@ -84,9 +106,9 @@ export function RouteComponent() {
             </div>
 
             <p className="text-base flex justify-center gap-2 font-normal text-zinc-400 w-full">
-              New here?
-              <Link className="font-bold text-zinc-200 hover:text-zinc-100 transition" to="/signup">
-                Create an Account.
+              Have an account?
+              <Link className="font-bold text-zinc-200 hover:text-zinc-100 transition" to="/signin">
+                Sign in.
               </Link>
             </p>
           </div>
@@ -102,7 +124,7 @@ export function RouteComponent() {
       {/* Right side - Image with gradient */}
       <section className="relative w-full h-full">
         <img
-          src="/aranha.jpg"
+          src="/batman.jpg"
           alt="Background image"
           className="absolute inset-0 w-full h-full object-cover"
         />

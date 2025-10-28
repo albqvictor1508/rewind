@@ -35,7 +35,7 @@ authRoutes.post(
 
     const newCode = AuthService.genCode();
     await Promise.all([
-      mail({ to: email, subject: "Seu código comédia", text: newCode }),
+      mail({ to: email, subject: "Rewind | Seu código", text: newCode }),
       redis.setex(REDIS_KEY, FIVE_MINUTES_IN_MS, JSON.stringify(newCode))
     ]);
 
@@ -204,7 +204,7 @@ authRoutes.post(
     const code = AuthService.genCode();
 
     await Promise.all([
-      mail({ to: email, subject: "Seu código comédia", text: code }),
+      mail({ to: email, subject: "Rewind | Seu código", text: code }),
       redis.setex(REDIS_KEY, FIVE_MINUTES_IN_MS, JSON.stringify(code))
     ]);
 

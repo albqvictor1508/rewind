@@ -29,6 +29,7 @@ export namespace AuthModel {
   export const SIGNUP_STEP_1_SCHEMA = z.object({
     username: USERNAME_SCHEMA,
     email: z.email(),
+    password: PASSWORD_SCHEMA,
   });
 
   export const RESEND_CODE_SCHEMA = z.object({
