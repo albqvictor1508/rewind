@@ -2,8 +2,6 @@ import { createFileRoute, Link } from "@tanstack/react-router"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Logo } from "@/components/logo"
-import { FcGoogle } from "react-icons/fc"
-import { FaGithub } from "react-icons/fa6";
 
 export const Route = createFileRoute('/_auth/change-password')({
   component: RouteComponent
@@ -35,7 +33,6 @@ export function RouteComponent() {
                   placeholder="Enter your email"
                 />
               </div>
-
 
               <Button
                 type="submit"
