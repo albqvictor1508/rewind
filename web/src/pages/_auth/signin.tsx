@@ -46,7 +46,9 @@ export function RouteComponent() {
                   className="p-5 font-normal text-lg"
                   placeholder="Enter your password"
                 />
-                <Link to={'/change-password'} className="text-base font-normal w-full text-right text-zinc-400 cursor-pointer hover:text-zinc-300 transition">
+                <Link
+                  to={'/change-password'}
+                  className="text-base font-normal w-full text-right text-zinc-400 cursor-pointer hover:text-zinc-300 transition">
                   Forgot password?
                 </Link>
               </div>

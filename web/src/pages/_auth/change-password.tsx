@@ -35,10 +35,14 @@ export function RouteComponent() {
               </div>
 
               <Button
-                type="submit"
+                type="button"
                 className="p-6 bg-red-600 hover:bg-red-700 transition font-bold text-white text-base"
               >
-                Send
+                <Link
+                  to={'/code'}
+                >
+                  Send
+                </Link>
               </Button>
             </form>
 
