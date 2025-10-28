@@ -9,12 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './pages/__root'
+import { Route as UserProfileRouteImport } from './pages/_user/profile'
 import { Route as AuthSignupRouteImport } from './pages/_auth/signup'
 import { Route as AuthSigninRouteImport } from './pages/_auth/signin'
 import { Route as AuthCodeRouteImport } from './pages/_auth/code'
 import { Route as AuthChangePasswordRouteImport } from './pages/_auth/change-password'
 import { Route as AppHomeRouteImport } from './pages/_app/home'
 
+const UserProfileRoute = UserProfileRouteImport.update({
+  id: '/_user/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthSignupRoute = AuthSignupRouteImport.update({
   id: '/_auth/signup',
   path: '/signup',
@@ -47,6 +53,7 @@ export interface FileRoutesByFullPath {
   '/code': typeof AuthCodeRoute
   '/signin': typeof AuthSigninRoute
   '/signup': typeof AuthSignupRoute
+  '/profile': typeof UserProfileRoute
 }
 export interface FileRoutesByTo {
   '/home': typeof AppHomeRoute
@@ -54,6 +61,7 @@ export interface FileRoutesByTo {
   '/code': typeof AuthCodeRoute
   '/signin': typeof AuthSigninRoute
   '/signup': typeof AuthSignupRoute
+  '/profile': typeof UserProfileRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,12 +70,25 @@ export interface FileRoutesById {
   '/_auth/code': typeof AuthCodeRoute
   '/_auth/signin': typeof AuthSigninRoute
   '/_auth/signup': typeof AuthSignupRoute
+  '/_user/profile': typeof UserProfileRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/home' | '/change-password' | '/code' | '/signin' | '/signup'
+  fullPaths:
+    | '/home'
+    | '/change-password'
+    | '/code'
+    | '/signin'
+    | '/signup'
+    | '/profile'
   fileRoutesByTo: FileRoutesByTo
-  to: '/home' | '/change-password' | '/code' | '/signin' | '/signup'
+  to:
+    | '/home'
+    | '/change-password'
+    | '/code'
+    | '/signin'
+    | '/signup'
+    | '/profile'
   id:
     | '__root__'
     | '/_app/home'
@@ -75,6 +96,7 @@ export interface FileRouteTypes {
     | '/_auth/code'
     | '/_auth/signin'
     | '/_auth/signup'
+    | '/_user/profile'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -83,10 +105,18 @@ export interface RootRouteChildren {
   AuthCodeRoute: typeof AuthCodeRoute
   AuthSigninRoute: typeof AuthSigninRoute
   AuthSignupRoute: typeof AuthSignupRoute
+  UserProfileRoute: typeof UserProfileRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/_user/profile': {
+      id: '/_user/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof UserProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_auth/signup': {
       id: '/_auth/signup'
       path: '/signup'
@@ -131,6 +161,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthCodeRoute: AuthCodeRoute,
   AuthSigninRoute: AuthSigninRoute,
   AuthSignupRoute: AuthSignupRoute,
+  UserProfileRoute: UserProfileRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
