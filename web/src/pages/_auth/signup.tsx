@@ -4,12 +4,58 @@ import { Button } from "@/components/ui/button"
 import { Logo } from "@/components/logo"
 import { FcGoogle } from "react-icons/fc"
 import { FaGithub } from "react-icons/fa6";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export const Route = createFileRoute('/_auth/signup')({
   component: RouteComponent
 })
 
+export const PASSWORD_SCHEMA = z.string()
+  .min(6)
+  .max(30)
+  .refine((input) => {
+    const hasNumber = /\d/.test(input);
+    const hasUppercase = /[A-Z]/.test(input);
+    const onlyAllowedChars = /^[a-zA-Z0-9@]*$/.test(input);
+    return hasNumber && hasUppercase && onlyAllowedChars;
+  }, {
+    message: "A senha deve conter pelo menos um número, uma letra maiúscula e apenas '@' como caractere especial."
+  });
+
+export const USERNAME_SCHEMA = z.string()
+  .min(6)
+  .max(30)
+  .refine((input) => /^[a-zA-Z0-9]*$/.test(input), {
+    message: "O nome de usuário não pode conter caracteres especiais."
+  });
+
+const signUpSchema = z.object({
+  username: USERNAME_SCHEMA,
+  email: z.string().email("Invalid email address").min(1, "Email is required"),
+  password: PASSWORD_SCHEMA,
+  confirmPassword: z.string().min(6, "Confirm password must be at least 6 characters long"),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
+});
+
+type SignUpSchema = z.infer<typeof signUpSchema>;
+
 export function RouteComponent() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignUpSchema>({
+    resolver: zodResolver(signUpSchema),
+  });
+
+  const onSubmit = (data: SignUpSchema) => {
+    console.log(data);
+  };
+
   return (
     <main className="w-full h-screen grid grid-cols-2">
       <section className="flex flex-col justify-between py-12 px-8 w-full h-screen bg-[#0a0a0a]">
@@ -23,7 +69,7 @@ export function RouteComponent() {
               </p>
             </div>
 
-            <form className="flex flex-col space-y-8">
+            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col space-y-8">
               <div className="flex flex-col space-y-2">
                 <label className="text-xl font-medium" htmlFor="username">
                   Username
@@ -33,7 +79,11 @@ export function RouteComponent() {
                   id="username"
                   className="p-5 font-normal text-lg"
                   placeholder="Enter your username"
+                  {...register("username")}
                 />
+                {errors.username && (
+                  <p className="text-red-500 text-sm">{errors.username.message}</p>
+                )}
               </div>
 
               <div className="flex flex-col space-y-2">
@@ -45,7 +95,11 @@ export function RouteComponent() {
                   id="email"
                   className="p-5 font-normal text-lg"
                   placeholder="Enter your email"
+                  {...register("email")}
                 />
+                {errors.email && (
+                  <p className="text-red-500 text-sm">{errors.email.message}</p>
+                )}
               </div>
 
               <div className="flex flex-col space-y-2">
@@ -57,7 +111,11 @@ export function RouteComponent() {
                   id="password"
                   className="p-5 font-normal text-lg"
                   placeholder="Enter your password"
+                  {...register("password")}
                 />
+                {errors.password && (
+                  <p className="text-red-500 text-sm">{errors.password.message}</p>
+                )}
               </div>
 
               <div className="flex flex-col space-y-2">
@@ -69,7 +127,11 @@ export function RouteComponent() {
                   id="confirm-password"
                   className="p-5 font-normal text-lg"
                   placeholder="Confirm your password"
+                  {...register("confirmPassword")}
                 />
+                {errors.confirmPassword && (
+                  <p className="text-red-500 text-sm">{errors.confirmPassword.message}</p>
+                )}
               </div>
 
 
