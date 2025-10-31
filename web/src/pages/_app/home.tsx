@@ -3,9 +3,7 @@ import { createFileRoute } from "@tanstack/react-router"
 
 export const Route = createFileRoute('/_app/home')({
   component: RouteComponent
-})
-
-//TODO: terminar isso aqui
+});
 
 export function RouteComponent() {
   const categories = [
@@ -191,8 +189,8 @@ export function RouteComponent() {
       {
         categories.map(
           category => (
-            <div className="flex flex-col space-y-2" key={category.name + '-' + new Date()}>
-              <h3 className="text-2xl font-semibold">{category.name}</h3>
+            <div className="flex flex-col space-y-4" key={category.name + '-' + new Date()}>
+              <h3 className="text-zinc-50 text-3xl font-bold">{category.name}</h3>
               <HomeMovies movies={category.movies} />
             </div>
           )

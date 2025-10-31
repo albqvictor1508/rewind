@@ -4,7 +4,7 @@ import {
   CarouselItem,
 } from "@/components/ui/carousel"
 import { Button } from "./ui/button";
-import { Heart, Star, StarIcon } from "lucide-react";
+import { StarIcon } from "lucide-react";
 import { useState } from "react";
 
 type StatusEnum = "WATCHED" | "WANT_WATCH" | "IM_WATCHING"
@@ -52,7 +52,7 @@ export function HomeMovies({ movies }: MovieProps) {
                 <div className="flex items-center gap-2">
                   <h3 className="font-semibold text-2xl text-white">{m.title}</h3>
                   <Button variant={'outline'} className="rounded-full">
-                    <Star className={`w-[300px] text-white ${m.marks.isFavorite ? 'fill-yellow-500 text-red-500' : ''}`} />
+                    <StarIcon className={`w-6 h-6 text-white ${m.marks.isFavorite ? 'fill-yellow-400 text-yellow-400' : ''}`} />
                   </Button>
                 </div>
 
