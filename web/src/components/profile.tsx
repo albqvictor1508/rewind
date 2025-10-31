@@ -18,9 +18,13 @@ export const Profile = ({ user }: ProfileProps) => {
       <div className="flex flex-col justify-center gap-2">
         <p className="font-semibold text-3xl">{displayName ? displayName : username}</p>
         {
-          email && (
+          !username && email ? (
             <p className="font-normal text-xl text-zinc-600">{email}</p>
           )
+            :
+            (
+              <p className="font-normal text-xl text-zinc-600">{username}</p>
+            )
         }
       </div>
     </Avatar>

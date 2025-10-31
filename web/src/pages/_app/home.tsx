@@ -1,16 +1,16 @@
-import { createFileRoute } from "@tanstack/react-router"
+import { createFileRoute, Link } from "@tanstack/react-router"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { Menu } from "@/components/menu"
 
 export const Route = createFileRoute('/_app/home')({
-  component: HomePage,
-  head: () => ({
-    meta: [
-      { title: 'Home | Rewind' }
-    ]
-  })
+  component: RouteComponent
 })
 
-function HomePage() {
+export function RouteComponent() {
   return (
-    <div>Salvee</div>
-  );
+    <div className="w-screen h-full">
+      <Menu />
+    </div>
+  )
 }
