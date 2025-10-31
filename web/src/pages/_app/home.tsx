@@ -1,16 +1,15 @@
-import { createFileRoute } from "@tanstack/react-router"
+import { createFileRoute, Link } from "@tanstack/react-router"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
 
 export const Route = createFileRoute('/_app/home')({
-  component: HomePage,
-  head: () => ({
-    meta: [
-      { title: 'Home | Rewind' }
-    ]
-  })
+  component: RouteComponent
 })
 
-function HomePage() {
+export function RouteComponent() {
   return (
-    <div>Salvee</div>
-  );
-  o
+    <div>
+      <h1>Home</h1>
+    </div >
+  )
+}

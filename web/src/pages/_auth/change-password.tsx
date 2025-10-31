@@ -12,6 +12,7 @@ export function RouteComponent() {
     <main className="w-full h-screen grid grid-cols-2">
       <section className="flex flex-col justify-between py-12 px-8 w-full h-screen bg-[#0a0a0a]">
         <Logo className="px-8 mb-12" />
+
         <div className="flex flex-col items-center mt-12 grow">
           <div className="w-[500px] flex flex-col space-y-4">
             <div className="flex flex-col space-y-2">
