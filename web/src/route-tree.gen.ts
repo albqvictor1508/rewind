@@ -27,14 +27,14 @@ const AuthSignupRoute = AuthSignupRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthSigninRoute = AuthSigninRouteImport.update({
-  id: '/_auth/signin',
+  id: '/signin',
   path: '/signin',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthRoute,
 } as any)
 const AuthCodeRoute = AuthCodeRouteImport.update({
-  id: '/_auth/code',
+  id: '/code',
   path: '/code',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthRoute,
 } as any)
 const AuthChangePasswordRoute = AuthChangePasswordRouteImport.update({
   id: '/_auth/change-password',
@@ -75,35 +75,33 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/home'
-    | '/change-password'
-    | '/code'
-    | '/signin'
-    | '/signup'
-    | '/profile'
+  | '/home'
+  | '/change-password'
+  | '/code'
+  | '/signin'
+  | '/signup'
+  | '/profile'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/home'
-    | '/change-password'
-    | '/code'
-    | '/signin'
-    | '/signup'
-    | '/profile'
+  | '/home'
+  | '/change-password'
+  | '/code'
+  | '/signin'
+  | '/signup'
+  | '/profile'
   id:
-    | '__root__'
-    | '/_app/home'
-    | '/_auth/change-password'
-    | '/_auth/code'
-    | '/_auth/signin'
-    | '/_auth/signup'
-    | '/_user/profile'
+  | '__root__'
+  | '/_app/home'
+  | '/_auth/change-password'
+  | '/_auth/code'
+  | '/_auth/signin'
+  | '/_auth/signup'
+  | '/_user/profile'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   AppHomeRoute: typeof AppHomeRoute
   AuthChangePasswordRoute: typeof AuthChangePasswordRoute
-  AuthCodeRoute: typeof AuthCodeRoute
-  AuthSigninRoute: typeof AuthSigninRoute
   AuthSignupRoute: typeof AuthSignupRoute
   UserProfileRoute: typeof UserProfileRoute
 }
@@ -129,14 +127,14 @@ declare module '@tanstack/react-router' {
       path: '/signin'
       fullPath: '/signin'
       preLoaderRoute: typeof AuthSigninRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthRoute
     }
     '/_auth/code': {
       id: '/_auth/code'
       path: '/code'
       fullPath: '/code'
       preLoaderRoute: typeof AuthCodeRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthRoute
     }
     '/_auth/change-password': {
       id: '/_auth/change-password'
@@ -158,8 +156,6 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   AppHomeRoute: AppHomeRoute,
   AuthChangePasswordRoute: AuthChangePasswordRoute,
-  AuthCodeRoute: AuthCodeRoute,
-  AuthSigninRoute: AuthSigninRoute,
   AuthSignupRoute: AuthSignupRoute,
   UserProfileRoute: UserProfileRoute,
 }
