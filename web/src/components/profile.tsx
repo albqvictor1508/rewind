@@ -1,7 +1,15 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar"
 import { cn } from "@/lib/utils"
 
-type ProfileProps = { user: { photo: string, username: string, displayName?: string, email?: string }, isProfile?: boolean }
+type ProfileProps = {
+  user: {
+    photo: string,
+    username: string,
+    displayName?: string,
+    email?: string
+  },
+  isProfile?: boolean
+}
 
 export const Profile = ({ user, isProfile }: ProfileProps) => {
   const { displayName, photo, username, email } = user;

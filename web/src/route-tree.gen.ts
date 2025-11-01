@@ -13,10 +13,12 @@ import { Route as UserRouteImport } from './pages/_user'
 import { Route as AuthRouteImport } from './pages/_auth'
 import { Route as AppRouteImport } from './pages/_app'
 import { Route as UserProfileRouteImport } from './pages/_user/profile'
+import { Route as UserMymoviesRouteImport } from './pages/_user/mymovies'
 import { Route as AuthSignupRouteImport } from './pages/_auth/signup'
 import { Route as AuthSigninRouteImport } from './pages/_auth/signin'
 import { Route as AuthCodeRouteImport } from './pages/_auth/code'
 import { Route as AuthChangePasswordRouteImport } from './pages/_auth/change-password'
+import { Route as AppSearchRouteImport } from './pages/_app/search'
 import { Route as AppHomeRouteImport } from './pages/_app/home'
 
 const UserRoute = UserRouteImport.update({
@@ -34,6 +36,11 @@ const AppRoute = AppRouteImport.update({
 const UserProfileRoute = UserProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => UserRoute,
+} as any)
+const UserMymoviesRoute = UserMymoviesRouteImport.update({
+  id: '/mymovies',
+  path: '/mymovies',
   getParentRoute: () => UserRoute,
 } as any)
 const AuthSignupRoute = AuthSignupRouteImport.update({
@@ -56,6 +63,11 @@ const AuthChangePasswordRoute = AuthChangePasswordRouteImport.update({
   path: '/change-password',
   getParentRoute: () => AuthRoute,
 } as any)
+const AppSearchRoute = AppSearchRouteImport.update({
+  id: '/search',
+  path: '/search',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppHomeRoute = AppHomeRouteImport.update({
   id: '/home',
   path: '/home',
@@ -64,18 +76,22 @@ const AppHomeRoute = AppHomeRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/home': typeof AppHomeRoute
+  '/search': typeof AppSearchRoute
   '/change-password': typeof AuthChangePasswordRoute
   '/code': typeof AuthCodeRoute
   '/signin': typeof AuthSigninRoute
   '/signup': typeof AuthSignupRoute
+  '/mymovies': typeof UserMymoviesRoute
   '/profile': typeof UserProfileRoute
 }
 export interface FileRoutesByTo {
   '/home': typeof AppHomeRoute
+  '/search': typeof AppSearchRoute
   '/change-password': typeof AuthChangePasswordRoute
   '/code': typeof AuthCodeRoute
   '/signin': typeof AuthSigninRoute
   '/signup': typeof AuthSignupRoute
+  '/mymovies': typeof UserMymoviesRoute
   '/profile': typeof UserProfileRoute
 }
 export interface FileRoutesById {
@@ -84,28 +100,34 @@ export interface FileRoutesById {
   '/_auth': typeof AuthRouteWithChildren
   '/_user': typeof UserRouteWithChildren
   '/_app/home': typeof AppHomeRoute
+  '/_app/search': typeof AppSearchRoute
   '/_auth/change-password': typeof AuthChangePasswordRoute
   '/_auth/code': typeof AuthCodeRoute
   '/_auth/signin': typeof AuthSigninRoute
   '/_auth/signup': typeof AuthSignupRoute
+  '/_user/mymovies': typeof UserMymoviesRoute
   '/_user/profile': typeof UserProfileRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/home'
+    | '/search'
     | '/change-password'
     | '/code'
     | '/signin'
     | '/signup'
+    | '/mymovies'
     | '/profile'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/home'
+    | '/search'
     | '/change-password'
     | '/code'
     | '/signin'
     | '/signup'
+    | '/mymovies'
     | '/profile'
   id:
     | '__root__'
@@ -113,10 +135,12 @@ export interface FileRouteTypes {
     | '/_auth'
     | '/_user'
     | '/_app/home'
+    | '/_app/search'
     | '/_auth/change-password'
     | '/_auth/code'
     | '/_auth/signin'
     | '/_auth/signup'
+    | '/_user/mymovies'
     | '/_user/profile'
   fileRoutesById: FileRoutesById
 }
@@ -156,6 +180,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UserProfileRouteImport
       parentRoute: typeof UserRoute
     }
+    '/_user/mymovies': {
+      id: '/_user/mymovies'
+      path: '/mymovies'
+      fullPath: '/mymovies'
+      preLoaderRoute: typeof UserMymoviesRouteImport
+      parentRoute: typeof UserRoute
+    }
     '/_auth/signup': {
       id: '/_auth/signup'
       path: '/signup'
@@ -184,6 +215,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthChangePasswordRouteImport
       parentRoute: typeof AuthRoute
     }
+    '/_app/search': {
+      id: '/_app/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof AppSearchRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/home': {
       id: '/_app/home'
       path: '/home'
@@ -196,10 +234,12 @@ declare module '@tanstack/react-router' {
 
 interface AppRouteChildren {
   AppHomeRoute: typeof AppHomeRoute
+  AppSearchRoute: typeof AppSearchRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppHomeRoute: AppHomeRoute,
+  AppSearchRoute: AppSearchRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
@@ -221,10 +261,12 @@ const AuthRouteChildren: AuthRouteChildren = {
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
 interface UserRouteChildren {
+  UserMymoviesRoute: typeof UserMymoviesRoute
   UserProfileRoute: typeof UserProfileRoute
 }
 
 const UserRouteChildren: UserRouteChildren = {
+  UserMymoviesRoute: UserMymoviesRoute,
   UserProfileRoute: UserProfileRoute,
 }
 
