@@ -9,15 +9,21 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './pages/__root'
+import { Route as UserRouteImport } from './pages/_user'
 import { Route as AuthRouteImport } from './pages/_auth'
 import { Route as AppRouteImport } from './pages/_app'
 import { Route as UserProfileRouteImport } from './pages/_user/profile'
+import { Route as UserMymoviesRouteImport } from './pages/_user/mymovies'
 import { Route as AuthSignupRouteImport } from './pages/_auth/signup'
 import { Route as AuthSigninRouteImport } from './pages/_auth/signin'
 import { Route as AuthCodeRouteImport } from './pages/_auth/code'
 import { Route as AuthChangePasswordRouteImport } from './pages/_auth/change-password'
 import { Route as AppHomeRouteImport } from './pages/_app/home'
 
+const UserRoute = UserRouteImport.update({
+  id: '/_user',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/_auth',
   getParentRoute: () => rootRouteImport,
@@ -27,9 +33,14 @@ const AppRoute = AppRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const UserProfileRoute = UserProfileRouteImport.update({
-  id: '/_user/profile',
+  id: '/profile',
   path: '/profile',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => UserRoute,
+} as any)
+const UserMymoviesRoute = UserMymoviesRouteImport.update({
+  id: '/mymovies',
+  path: '/mymovies',
+  getParentRoute: () => UserRoute,
 } as any)
 const AuthSignupRoute = AuthSignupRouteImport.update({
   id: '/signup',
@@ -63,6 +74,7 @@ export interface FileRoutesByFullPath {
   '/code': typeof AuthCodeRoute
   '/signin': typeof AuthSigninRoute
   '/signup': typeof AuthSignupRoute
+  '/mymovies': typeof UserMymoviesRoute
   '/profile': typeof UserProfileRoute
 }
 export interface FileRoutesByTo {
@@ -71,17 +83,20 @@ export interface FileRoutesByTo {
   '/code': typeof AuthCodeRoute
   '/signin': typeof AuthSigninRoute
   '/signup': typeof AuthSignupRoute
+  '/mymovies': typeof UserMymoviesRoute
   '/profile': typeof UserProfileRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteWithChildren
   '/_auth': typeof AuthRouteWithChildren
+  '/_user': typeof UserRouteWithChildren
   '/_app/home': typeof AppHomeRoute
   '/_auth/change-password': typeof AuthChangePasswordRoute
   '/_auth/code': typeof AuthCodeRoute
   '/_auth/signin': typeof AuthSigninRoute
   '/_auth/signup': typeof AuthSignupRoute
+  '/_user/mymovies': typeof UserMymoviesRoute
   '/_user/profile': typeof UserProfileRoute
 }
 export interface FileRouteTypes {
@@ -92,6 +107,7 @@ export interface FileRouteTypes {
     | '/code'
     | '/signin'
     | '/signup'
+    | '/mymovies'
     | '/profile'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -100,27 +116,37 @@ export interface FileRouteTypes {
     | '/code'
     | '/signin'
     | '/signup'
+    | '/mymovies'
     | '/profile'
   id:
     | '__root__'
     | '/_app'
     | '/_auth'
+    | '/_user'
     | '/_app/home'
     | '/_auth/change-password'
     | '/_auth/code'
     | '/_auth/signin'
     | '/_auth/signup'
+    | '/_user/mymovies'
     | '/_user/profile'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
   AuthRoute: typeof AuthRouteWithChildren
-  UserProfileRoute: typeof UserProfileRoute
+  UserRoute: typeof UserRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/_user': {
+      id: '/_user'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof UserRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_auth': {
       id: '/_auth'
       path: ''
@@ -140,7 +166,14 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof UserProfileRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof UserRoute
+    }
+    '/_user/mymovies': {
+      id: '/_user/mymovies'
+      path: '/mymovies'
+      fullPath: '/mymovies'
+      preLoaderRoute: typeof UserMymoviesRouteImport
+      parentRoute: typeof UserRoute
     }
     '/_auth/signup': {
       id: '/_auth/signup'
@@ -206,10 +239,22 @@ const AuthRouteChildren: AuthRouteChildren = {
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
+interface UserRouteChildren {
+  UserMymoviesRoute: typeof UserMymoviesRoute
+  UserProfileRoute: typeof UserProfileRoute
+}
+
+const UserRouteChildren: UserRouteChildren = {
+  UserMymoviesRoute: UserMymoviesRoute,
+  UserProfileRoute: UserProfileRoute,
+}
+
+const UserRouteWithChildren = UserRoute._addFileChildren(UserRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
   AuthRoute: AuthRouteWithChildren,
-  UserProfileRoute: UserProfileRoute,
+  UserRoute: UserRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

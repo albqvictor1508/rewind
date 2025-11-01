@@ -12,7 +12,7 @@ export const Profile = ({ user, isProfile }: ProfileProps) => {
 
   return (
     <Avatar className={cn("flex items-center w-fit", !isProfile && "gap-6")}>
-      <div className={cn("rounded-full bg-zinc-950 flex items-center justify-center", isProfile ? "w-10 h-10" : "w-32 h-32")}>
+      <div className={cn("rounded-full bg-zinc-800 flex items-center justify-center", isProfile ? "w-12 h-12" : "w-32 h-32")}>
         <AvatarImage className="w-full h-full rounded-full object-cover" src={photo} alt={username} />
         <AvatarFallback className={cn("text-white", isProfile ? "text-sm" : "text-2xl")}>{fallback}</AvatarFallback>
       </div>

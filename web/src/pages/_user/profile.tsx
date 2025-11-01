@@ -1,5 +1,4 @@
 import { Profile } from '@/components/profile'
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input'
 import { EditProfileDialog } from '@/components/edit-profile-dialog'
 import { createFileRoute } from '@tanstack/react-router'
@@ -16,7 +15,7 @@ function RouteComponent() {
 
   return (
     <section className='w-full h-full mt-24 flex flex-col space-y-12 justify-center items-center'>
-      <div className='w-[1200px] bg-zinc-900 rounded-xl p-8 border-2 flex items-center justify-between'>
+      <div className='w-[1200px] bg-zinc-900 rounded-md p-8 border-2 flex items-center justify-between'>
         <div className='flex flex-col'>
           <Profile user={
             {
