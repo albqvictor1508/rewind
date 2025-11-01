@@ -9,12 +9,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+
 export function DeleteAccountDialog() {
   return (
     <Dialog>
       <form>
         <DialogTrigger asChild>
-          <Button variant="secondary" className="bg-red-900/10 text-red-600 font-bold text-lg rounded-md p-6 border border-red-900/40 hover:bg-red-900/20 transition">Delete Account</Button>
+          <Button variant="secondary" className="bg-red-900/10 text-red-600 font-bold rounded-md p-6 border border-red-900/40 hover:bg-red-900/20 transition">Delete Account</Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>

@@ -17,7 +17,7 @@ export function ChangePasswordDialog() {
     <Dialog>
       <form>
         <DialogTrigger asChild>
-          <Button variant="secondary" className="p-6 text-lg">Change Password</Button>
+          <Button variant="secondary" className="p-6 text-base">Change Password</Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>

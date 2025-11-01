@@ -163,17 +163,17 @@ function RouteComponent() {
 
   return <div className='w-full h-screen flex flex-col items-center'>
     <div className='w-[1400px] h-full p-6'>
-      <Input type='search' className='mb-12 p-8' placeholder='Pesquisar filmes, séries, atores...' />
+      <Input type='search' className='mb-12 p-8' placeholder='Search movies, actors, series...' />
 
       <div className='flex gap-4 items-center pb-12'>
-        <RewindSelect payload={['salve', 'salve2']} label='Salves' />
+        <RewindSelect payload={['superhero', 'action']} label='Genre' />
         <RewindSelect payload={['salve', 'salve2']} label='Salves' />
         <RewindSelect payload={['salve', 'salve2']} label='Salves' />
         <RewindSelect payload={['salve', 'salve2']} label='Salves' />
       </div>
 
       <div className='flex flex-col space-y-8'>
-        <h2 className='text-4xl font-bold'>Buscas Populares</h2>
+        <h2 className='text-4xl font-bold'>Popular Searches</h2>
 
         <div className='w-full h-screen grid grid-cols-3 gap-8'>
           {

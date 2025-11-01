@@ -19,12 +19,12 @@ export const Profile = ({ user, isProfile }: ProfileProps) => {
     username.charAt(0).toUpperCase() + username.charAt(username.length - 1).toUpperCase();
 
   return (
-    <Avatar className={cn("flex items-center w-fit", !isProfile && "gap-6")}>
-      <div className={cn("rounded-full bg-zinc-800 flex items-center justify-center", isProfile ? "w-12 h-12" : "w-32 h-32")}>
+    <Avatar className={cn("flex items-center w-fit", isProfile && "gap-4")}>
+      <div className={cn("rounded-full bg-zinc-800 flex items-center justify-center", isProfile ? "w-32 h-32" : "w-12 h-12")}>
         <AvatarImage className="w-full h-full rounded-full object-cover" src={photo} alt={username} />
-        <AvatarFallback className={cn("text-white", isProfile ? "text-sm" : "text-2xl")}>{fallback}</AvatarFallback>
+        <AvatarFallback className={cn("text-white", isProfile ? "text-2xl" : "text-sm")}>{fallback}</AvatarFallback>
       </div>
-      {!isProfile &&
+      {isProfile &&
         <div className="flex flex-col justify-center gap-2">
           <p className="font-semibold text-3xl">{displayName ? displayName : username}</p>
           {

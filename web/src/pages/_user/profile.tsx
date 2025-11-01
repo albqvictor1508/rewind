@@ -1,9 +1,9 @@
-import { Profile } from '@/components/profile'
 import { Input } from '@/components/ui/input'
 import { EditProfileDialog } from '@/components/edit-profile-dialog'
 import { createFileRoute } from '@tanstack/react-router'
 import { DeleteAccountDialog } from '@/components/delete-account-dialog';
 import { ChangePasswordDialog } from '@/components/change-password-dialog';
+import { ChangeAvatarDialog } from '@/components/change-avatar-dialog';
 
 export const Route = createFileRoute('/_user/profile')({
   component: RouteComponent,
@@ -14,23 +14,21 @@ function RouteComponent() {
   const email = 'albq.victor@gmail.com';
 
   return (
-    <section className='w-full h-full mt-24 flex flex-col space-y-12 justify-center items-center'>
+    <section className='w-full h-full flex flex-col space-y-12 justify-center items-center'>
       <div className='w-[1200px] bg-zinc-900 rounded-md p-8 border-2 flex items-center justify-between'>
-        <div className='flex flex-col'>
-          <Profile user={
-            {
-              displayName: "John Doe",
-              photo: "https://unsplash.com/photos/silhouette-of-man-illustration-2LowviVHZ-E",
-              username: '@' + "john_doe",
-              email: "john@doe.com"
-            }
-          } />
-        </div>
+        <ChangeAvatarDialog user={
+          {
+            displayName: "John Doe",
+            photo: "https://unsplash.com/photos/silhouette-of-man-illustration-2LowviVHZ-E",
+            username: '@' + "john_doe",
+            email: "john@doe.com"
+          }
+        } />
 
         <EditProfileDialog />
       </div>
       <div className='w-[1200px] flex flex-col space-y-4'>
-        <h2 className='text-2xl font-bold'>Visão Geral</h2>
+        <h2 className='text-2xl font-bold'>Overview</h2>
 
         <div className='w-full rounded-xl flex gap-4'>
           <div className='flex rounded-xl flex-col space-y-2 flex-1 p-8 bg-zinc-900 border-2 border-zinc-850'>

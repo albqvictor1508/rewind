@@ -32,7 +32,7 @@ export function HomeMovies({ movies }: { movies: MovieProps[] }) {
       <CarouselContent className="-ml-4">
         {movies.map((movie) => (
           <CarouselItem key={movie.title} className="pl-4 basis-auto">
-            <MovieCard movie={movie} />
+            <MovieCard movie={movie} cardWidth={400} cardHeight={400} />
           </CarouselItem>
         ))}
       </CarouselContent>

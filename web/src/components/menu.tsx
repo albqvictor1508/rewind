@@ -8,7 +8,6 @@ import {
   NavigationMenuList,
 } from "@/components/ui/navigation-menu"
 import { Profile } from "./profile"
-import { Input } from "./ui/input"
 import { Logo } from "./logo"
 
 export function Menu() {
@@ -35,7 +34,9 @@ export function Menu() {
         </NavigationMenu>
       </div>
 
-      <Profile user={user} isProfile />
+      <Link to={'/profile'} className="cursor-pointer">
+        <Profile user={user} />
+      </Link>
     </div >
   )
 }
