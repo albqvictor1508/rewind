@@ -13,7 +13,6 @@ import { Route as UserRouteImport } from './pages/_user'
 import { Route as AuthRouteImport } from './pages/_auth'
 import { Route as AppRouteImport } from './pages/_app'
 import { Route as UserProfileRouteImport } from './pages/_user/profile'
-import { Route as UserMymoviesRouteImport } from './pages/_user/mymovies'
 import { Route as AuthSignupRouteImport } from './pages/_auth/signup'
 import { Route as AuthSigninRouteImport } from './pages/_auth/signin'
 import { Route as AuthCodeRouteImport } from './pages/_auth/code'
@@ -35,11 +34,6 @@ const AppRoute = AppRouteImport.update({
 const UserProfileRoute = UserProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
-  getParentRoute: () => UserRoute,
-} as any)
-const UserMymoviesRoute = UserMymoviesRouteImport.update({
-  id: '/mymovies',
-  path: '/mymovies',
   getParentRoute: () => UserRoute,
 } as any)
 const AuthSignupRoute = AuthSignupRouteImport.update({
@@ -74,7 +68,6 @@ export interface FileRoutesByFullPath {
   '/code': typeof AuthCodeRoute
   '/signin': typeof AuthSigninRoute
   '/signup': typeof AuthSignupRoute
-  '/mymovies': typeof UserMymoviesRoute
   '/profile': typeof UserProfileRoute
 }
 export interface FileRoutesByTo {
@@ -83,7 +76,6 @@ export interface FileRoutesByTo {
   '/code': typeof AuthCodeRoute
   '/signin': typeof AuthSigninRoute
   '/signup': typeof AuthSignupRoute
-  '/mymovies': typeof UserMymoviesRoute
   '/profile': typeof UserProfileRoute
 }
 export interface FileRoutesById {
@@ -96,7 +88,6 @@ export interface FileRoutesById {
   '/_auth/code': typeof AuthCodeRoute
   '/_auth/signin': typeof AuthSigninRoute
   '/_auth/signup': typeof AuthSignupRoute
-  '/_user/mymovies': typeof UserMymoviesRoute
   '/_user/profile': typeof UserProfileRoute
 }
 export interface FileRouteTypes {
@@ -107,7 +98,6 @@ export interface FileRouteTypes {
     | '/code'
     | '/signin'
     | '/signup'
-    | '/mymovies'
     | '/profile'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -116,7 +106,6 @@ export interface FileRouteTypes {
     | '/code'
     | '/signin'
     | '/signup'
-    | '/mymovies'
     | '/profile'
   id:
     | '__root__'
@@ -128,7 +117,6 @@ export interface FileRouteTypes {
     | '/_auth/code'
     | '/_auth/signin'
     | '/_auth/signup'
-    | '/_user/mymovies'
     | '/_user/profile'
   fileRoutesById: FileRoutesById
 }
@@ -166,13 +154,6 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof UserProfileRouteImport
-      parentRoute: typeof UserRoute
-    }
-    '/_user/mymovies': {
-      id: '/_user/mymovies'
-      path: '/mymovies'
-      fullPath: '/mymovies'
-      preLoaderRoute: typeof UserMymoviesRouteImport
       parentRoute: typeof UserRoute
     }
     '/_auth/signup': {
@@ -240,12 +221,10 @@ const AuthRouteChildren: AuthRouteChildren = {
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
 interface UserRouteChildren {
-  UserMymoviesRoute: typeof UserMymoviesRoute
   UserProfileRoute: typeof UserProfileRoute
 }
 
 const UserRouteChildren: UserRouteChildren = {
-  UserMymoviesRoute: UserMymoviesRoute,
   UserProfileRoute: UserProfileRoute,
 }
 
