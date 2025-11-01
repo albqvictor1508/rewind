@@ -1,4 +1,15 @@
-import { MovieService } from "src/modules/movies/service";
+import { eq, sql } from "drizzle-orm";
+import { db } from "src/db/client";
+import { movieMarks } from "src/db/schema/movieMarks";
 
-const movies = await MovieService.getMovie("1113774a-a783-4619-824e-057182df9f26")
-console.log(movies)
+const userId = 'salve';
+
+const [salve] = await db.select({
+  moviesWatched: sql<number>`count(CASE WHEN ${movieMarks.status} = 'WATCHED' THEN 1 END)`.mapWith(Number),
+  moviesWatching: sql<number>`count(CASE WHEN ${movieMarks.status} = 'IM_WATCHING' THEN 1 END)`.mapWith(Number),
+  moviesFavorited: sql<number>`count(CASE WHEN ${movieMarks.isFavorite} = true THEN 1 END)`.mapWith(Number)
+}).from(movieMarks)
+  .where(eq(movieMarks.userId, userId))
+
+console.log(salve);
+
