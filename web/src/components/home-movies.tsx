@@ -21,6 +21,7 @@ export type MovieProps = {
 
 export function HomeMovies({ movies }: { movies: MovieProps[] }) {
   const [isFavorite, setIsFavorite] = useState(false) //tenho que ver como vou fazer essa questão do toggle
+
   return (
     <Carousel
       opts={{
@@ -32,7 +33,7 @@ export function HomeMovies({ movies }: { movies: MovieProps[] }) {
       <CarouselContent className="-ml-4">
         {movies.map((movie) => (
           <CarouselItem key={movie.title} className="pl-4 basis-auto">
-            <MovieCard movie={movie} cardWidth={400} cardHeight={400} />
+            <MovieCard movie={movie} />
           </CarouselItem>
         ))}
       </CarouselContent>

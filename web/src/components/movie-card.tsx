@@ -9,7 +9,7 @@ type MovieCardProps = {
 }
 export const MovieCard = ({ movie, cardHeight, cardWidth }: MovieCardProps) => {
   return (
-    <div className={`w-[${cardWidth ?? 300}px] h-[${cardHeight ?? 400}px] relative rounded-md overflow-hidden group`}>
+    <div style={{ width: cardWidth ?? 300, height: cardHeight ?? 400 }} className={`relative rounded-md overflow-hidden group`}>
       <img src={movie.photo} alt={movie.title} className="w-full h-full object-cover transition-all duration-300 group-hover:blur-sm group-hover:scale-110" />
 
       {/* Initial Overlay */}
