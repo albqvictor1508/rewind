@@ -2,9 +2,14 @@ import { StarIcon } from "lucide-react"
 import type { MovieProps } from "./home-movies"
 import { Button } from "./ui/button"
 
-export const MovieCard = ({ movie }: { movie: MovieProps }) => {
+type MovieCardProps = {
+  movie: MovieProps;
+  cardWidth?: number;
+  cardHeight?: number;
+}
+export const MovieCard = ({ movie, cardHeight, cardWidth }: MovieCardProps) => {
   return (
-    <div className="w-[300px] h-[400px] relative rounded-md overflow-hidden group">
+    <div className={`w-[${cardWidth ?? 300}px] h-[${cardHeight ?? 400}px] relative rounded-md overflow-hidden group`}>
       <img src={movie.photo} alt={movie.title} className="w-full h-full object-cover transition-all duration-300 group-hover:blur-sm group-hover:scale-110" />
 
       {/* Initial Overlay */}
@@ -21,7 +26,7 @@ export const MovieCard = ({ movie }: { movie: MovieProps }) => {
         <div className="flex items-center gap-2">
           <h3 className="font-semibold text-2xl text-white">{movie.title}</h3>
           <Button variant={'outline'} className="rounded-full">
-            <StarIcon className={`w-6 h-6 text-white ${movie.marks.isFavorite ? 'fill-yellow-400 text-yellow-400' : ''}`} />
+            <StarIcon className={`w - 6 h - 6 text - white ${movie.marks.isFavorite ? 'fill-yellow-400 text-yellow-400' : ''} `} />
           </Button>
         </div>
 
@@ -39,6 +44,6 @@ export const MovieCard = ({ movie }: { movie: MovieProps }) => {
           <Button variant="outline" className="flex-1">Assistindo</Button>
         </div>
       </div>
-    </div>
+    </div >
   )
 }

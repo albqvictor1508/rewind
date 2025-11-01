@@ -162,7 +162,7 @@ function RouteComponent() {
   ];
 
   return <section className='w-screen flex justify-center'>
-    <div id='container' className='w-[1200px] flex flex-col space-y-16' >
+    <div id='container' className='w-[1400px] flex flex-col space-y-16' >
       <div className='flex justify-between items-end'>
 
         <div className='flex flex-col gap-4'>
