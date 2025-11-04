@@ -2,6 +2,7 @@ import { createSigner, createVerifier } from "fast-jwt";
 import { env } from "src/common/env";
 import z, { type ZodSchema } from "zod";
 import type { Request, Response, NextFunction } from "express";
+import chalk from "chalk";
 
 const { SECRET } = env
 
@@ -55,21 +56,14 @@ export const auth = {
       "/auth/signup/:code",
     ];
 
-    if (NON_AUTH_ROUTES.includes(req.path)) {
-      return next();
-    }
+    if (NON_AUTH_ROUTES.includes(req.path)) return next();
 
     const token = req.cookies.movies_auth;
-
-    if (!token) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
+    if (!token) return res.status(401).json("Unauthorized");
 
     const user = this.verify(token);
 
-    if (!user) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
+    if (!user) return res.status(401).json("Unauthorized");
 
     // @ts-expect-error
     req.user = user;

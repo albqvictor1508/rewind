@@ -4,16 +4,37 @@ import { MovieService } from "./service";
 import { z } from "zod";
 import { db } from "src/db/client";
 import { movies } from "src/db/schema/movies";
-import { count, eq, sql } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { movieMarks } from "src/db/schema/movieMarks";
 import { FIVE_MINUTES_IN_MS, redis } from "src/common/redis";
+import { MoviesModel } from "./model";
 
 export const movieRoutes = Router();
 
-movieRoutes.get("/", async (_, response) => {
-  const movies = await MovieService.getMoviesGroupedByGenre();
-  return response.send(movies);
-});
+movieRoutes.get(
+  "/",
+  //auth.authenticate,
+  async (_, response) => {
+    const REDIS_KEY = 'movies';
+    if (await redis.exists(REDIS_KEY)) response.send(
+      JSON.parse(await redis.get(REDIS_KEY) as string)
+    );
+
+    const movies = await MovieService.getMoviesGroupedByGenre();
+
+    await redis.setex(REDIS_KEY, FIVE_MINUTES_IN_MS, JSON.stringify(movies));
+    return response.send(movies);
+  });
+
+movieRoutes.get(
+  "/filter"
+  , async (request, response) => {
+    const payload = MoviesModel
+      .GET_MOVIES_QUERY.parse(request.query);
+
+    const movies = await MovieService.filterMovies(payload);
+    return response.send(movies);
+  });
 
 movieRoutes.get("/user", auth.authenticate, async (request, response) => {
   // @ts-ignore

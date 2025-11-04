@@ -16,7 +16,7 @@ export const movieMarks = pgTable("movie_marks", {
   movieId: uuid().notNull().references(
     () => movies.id
   ),
-  status: text({ enum: statusEnum }).notNull(),
+  status: text({ enum: statusEnum }),
   createdAt: timestamp().defaultNow(),
   isFavorite: boolean().default(false),
 })

@@ -8,6 +8,8 @@ import { productionCompanies } from "./productionCompanies";
 import { productionCountries } from "./productionCountries";
 import { sessions } from "./sessions";
 import { users } from "./users";
+import { actors } from "./actors";
+import { moviesActors } from "./moviesActors";
 
 export const schema = {
   users,
@@ -20,4 +22,6 @@ export const schema = {
   moviesProductionCompanies,
   productionCountries,
   moviesProductionCountries,
+  actors,
+  moviesActors,
 };

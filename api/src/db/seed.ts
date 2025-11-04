@@ -9,7 +9,10 @@ import { productionCountries } from "./schema/productionCountries";
 import { moviesGenres } from "./schema/moviesGenres";
 import { moviesProductionCompanies } from "./schema/moviesProductionCompanies";
 import { moviesProductionCountries } from "./schema/moviesProductionCountries";
+import { actors } from "./schema/actors";
+import { moviesActors } from "./schema/moviesActors";
 import { reset } from "drizzle-seed";
+import { sql } from "drizzle-orm";
 
 await reset(db, schema);
 
@@ -25,7 +28,7 @@ const tmdbApi = axios.create({
   },
 });
 
-const TOTAL_PAGES_TO_FETCH = 15;
+const TOTAL_PAGES_TO_FETCH = 30;
 async function seed() {
 
   for (let page = 1; page <= TOTAL_PAGES_TO_FETCH; page++) {
@@ -139,6 +142,38 @@ async function seed() {
               countryId: p.id,
             }))
           ).onConflictDoNothing();
+        }
+
+        const creditsResponse = await tmdbApi.get(`/movie/${movieStub.id}/credits`);
+        const cast = creditsResponse.data.cast;
+
+        if (cast && cast.length > 0) {
+          const actorsToInsert = cast.map((actor: any) => ({
+            name: actor.name,
+            photo: actor.profile_path ? `${MOVIE_API_IMAGE_BASE_URL}${actor.profile_path}` : null,
+            popularity: actor.popularity,
+            tmdbId: actor.id,
+          }));
+
+          if (actorsToInsert.length > 0) {
+            await db
+              .insert(actors)
+              .values(actorsToInsert)
+              .onConflictDoUpdate({ target: actors.tmdbId, set: { name: sql`excluded.name` } });
+          }
+
+          const allActors = await db.query.actors.findMany({
+            where: (a, { inArray }) => inArray(a.tmdbId, cast.map((actor: any) => actor.id))
+          });
+
+          if (allActors.length > 0) {
+            await db.insert(moviesActors).values(
+              allActors.map((actor) => ({
+                movieId: insertedMovie.id,
+                actorId: actor.id,
+              }))
+            ).onConflictDoNothing();
+          }
         }
 
       } catch (error: any) {

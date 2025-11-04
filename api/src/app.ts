@@ -7,6 +7,7 @@ import { healthRoute } from "./modules/health";
 import cors from "cors"
 import cookieParser from "cookie-parser"
 import { movieRoutes } from "./modules/movies";
+import { movieMarkRoutes } from "./modules/movieMarks";
 
 export let readyNum = 0;
 export const app = express();
@@ -23,6 +24,7 @@ app.use(cookieParser())
 app.use("/users", userRoutes);
 app.use("/auth", authRoutes);
 app.use("/movies", movieRoutes);
+app.use("/movies", movieMarkRoutes);
 app.use(healthRoute);
 
 app.listen(PORT, () => {

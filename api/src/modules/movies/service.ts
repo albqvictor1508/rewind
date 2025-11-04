@@ -1,10 +1,82 @@
-import { eq, sql } from "drizzle-orm";
+import {
+  and,
+  eq,
+  ilike,
+  inArray,
+  or,
+  sql
+} from "drizzle-orm";
 import { db } from "src/db/client";
+import { genres } from "src/db/schema/genres";
 import { movieMarks } from "src/db/schema/movieMarks";
 import { movies } from "src/db/schema/movies";
+import { moviesGenres } from "src/db/schema/moviesGenres";
+import { actors as actorsSchema } from "src/db/schema/actors";
+import { moviesActors } from "src/db/schema/moviesActors";
 
+type FilterMovieOptions = {
+  limit: number;
+  genres?: string[];
+  actors?: string[];
+  releaseYear?: number;
+  search?: string;
+};
 
 export class MovieService {
+  public static async filterMovies({
+    search,
+    limit,
+    actors,
+    genres: genreNames,
+    releaseYear,
+  }: FilterMovieOptions) {
+    const conditions = [];
+
+    if (search) {
+      conditions.push(
+        or(
+          ilike(movies.name, `%${search}%`),
+          ilike(movies.originalTitle, `%${search}%`),
+          ilike(movies.overview, `%${search}%`)
+        )
+      );
+    }
+
+    if (releaseYear) {
+      conditions.push(
+        eq(sql`extract(year from ${movies.releasedAt})`, releaseYear)
+      );
+    }
+
+    if (genreNames && genreNames.length > 0) {
+      const genreSubquery = db
+        .select({ movieId: moviesGenres.movieId })
+        .from(genres)
+        .leftJoin(moviesGenres, eq(genres.id, moviesGenres.genreId))
+        .where(inArray(genres.name, genreNames));
+
+      conditions.push(inArray(movies.id, genreSubquery));
+    }
+
+    if (actors && actors.length > 0) {
+      const actorSubquery = db
+        .select({ movieId: moviesActors.movieId })
+        .from(actorsSchema)
+        .leftJoin(moviesActors, eq(actorsSchema.id, moviesActors.actorId))
+        .where(inArray(actorsSchema.name, actors));
+
+      conditions.push(inArray(movies.id, actorSubquery));
+    }
+
+    const finalConditions = and(...conditions);
+
+    const query = db.select().from(movies).where(finalConditions).limit(limit);
+
+    const filteredMovies = await query;
+
+    return filteredMovies;
+  }
+
   public static async getMoviesGroupedByGenre() {
     const query = sql`
       SELECT
