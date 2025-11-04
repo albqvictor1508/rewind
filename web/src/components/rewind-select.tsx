@@ -11,11 +11,12 @@ import {
 type SelectOptions = {
   label: string
   payload: string[]
+  onValueChange?: (value: string) => void
 }
 
-export function RewindSelect({ label, payload }: SelectOptions) {
+export function RewindSelect({ label, payload, onValueChange }: SelectOptions) {
   return (
-    <Select>
+    <Select onValueChange={onValueChange}>
       <SelectTrigger className="w-[180px]">
         <SelectValue placeholder={label} />
       </SelectTrigger>
@@ -25,7 +26,7 @@ export function RewindSelect({ label, payload }: SelectOptions) {
           {
             payload.map(
               p => (
-                <SelectItem value={p}>{p.replace(p.charAt(0), p.charAt(0).toUpperCase())}</SelectItem>
+                <SelectItem key={p} value={p}>{p}</SelectItem>
               )
             )
           }
