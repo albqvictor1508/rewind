@@ -16,8 +16,13 @@ import { moviesActors } from "src/db/schema/moviesActors";
 
 type FilterMovieOptions = {
   limit: number;
+<<<<<<< Updated upstream
   genres?: string[]; // Expecting UUIDs for genres
   actors?: string[]; // Expecting UUIDs for actors
+=======
+  genreIds?: string[];
+  actorIds?: string[];
+>>>>>>> Stashed changes
   releaseYear?: number;
   search?: string;
 };
@@ -26,8 +31,8 @@ export class MovieService {
   public static async filterMovies({
     search,
     limit,
-    actors: actorIds,
-    genres: genreIds,
+    actorIds,
+    genreIds,
     releaseYear,
   }: FilterMovieOptions) {
     const conditions = [];
