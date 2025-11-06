@@ -62,8 +62,15 @@ export class MovieService {
       const actorSubquery = db
         .select({ movieId: moviesActors.movieId })
         .from(actorsSchema)
-        .leftJoin(moviesActors, eq(actorsSchema.id, moviesActors.actorId))
-        .where(inArray(actorsSchema.name, actors));
+        .leftJoin(
+          moviesActors,
+          eq(actorsSchema.id, moviesActors.actorId)
+        )
+        .where(
+          inArray(
+            actorsSchema.name,
+            actors)
+        ); //TODO: tenho que usar algo como ilike aqui também ou parsear melhor a string de pesquisa
 
       conditions.push(inArray(movies.id, actorSubquery));
     }
