@@ -16,8 +16,8 @@ import { moviesActors } from "src/db/schema/moviesActors";
 
 type FilterMovieOptions = {
   limit: number;
-  genres?: string[];
-  actors?: string[];
+  genreIds?: string[];
+  actorIds?: string[];
   releaseYear?: number;
   search?: string;
 };
@@ -27,8 +27,8 @@ export class MovieService {
   public static async filterMovies({
     search,
     limit,
-    actors: actorIds,
-    genres: genreIds,
+    actorIds,
+    genreIds,
     releaseYear,
   }: FilterMovieOptions) {
     const conditions = [];
