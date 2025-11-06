@@ -41,6 +41,7 @@ export class Bucket {
 
     try {
       await s3.send(command);
+
       return { ok: true };
     } catch (error) {
       console.error("Error removing object from bucket:", error);
