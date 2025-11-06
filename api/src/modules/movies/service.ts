@@ -16,13 +16,14 @@ import { moviesActors } from "src/db/schema/moviesActors";
 
 type FilterMovieOptions = {
   limit: number;
-  genres?: string[]; // Expecting UUIDs for genres
-  actors?: string[]; // Expecting UUIDs for actors
+  genres?: string[];
+  actors?: string[];
   releaseYear?: number;
   search?: string;
 };
 
 export class MovieService {
+
   public static async filterMovies({
     search,
     limit,
@@ -63,11 +64,8 @@ export class MovieService {
         .select({ movieId: moviesActors.movieId })
         .from(actorsSchema)
         .leftJoin(moviesActors, eq(actorsSchema.id, moviesActors.actorId))
-<<<<<<< Updated upstream
-        .where(inArray(actorsSchema.name, actors));
-=======
         .where(inArray(actorsSchema.id, actorIds));
->>>>>>> Stashed changes
+
 
       conditions.push(inArray(movies.id, actorSubquery));
     }
