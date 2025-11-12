@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/logo";
@@ -16,6 +16,8 @@ export const Route = createFileRoute("/_auth/signin")({
 type SignUpSchema = z.infer<typeof signInSchema>;
 
 export function RouteComponent() {
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -26,6 +28,10 @@ export function RouteComponent() {
 
   const onSubmit = (data: SignUpSchema) => {
     console.log(data);
+
+    navigate({
+      to: "/home",
+    });
   };
 
   return (
