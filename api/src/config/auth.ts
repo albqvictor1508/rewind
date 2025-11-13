@@ -39,9 +39,11 @@ export const auth = {
   verify(token: string): AuthOptions | null {
     try {
       const payload = verifier(token);
+      console.log(chalk.green("Decoded JWT payload:"), payload);
       AUTH_SCHEMA.parse(payload);
       return payload as AuthOptions;
     } catch (error) {
+      console.error(chalk.red("Token verification failed:"), error);
       return null;
     }
   },

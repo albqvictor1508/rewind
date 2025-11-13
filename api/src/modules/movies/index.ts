@@ -13,7 +13,7 @@ export const movieRoutes = Router();
 
 movieRoutes.get(
   "/",
-  //auth.authenticate,
+  auth.authenticate,
   async (_, response) => {
     const REDIS_KEY = 'movies';
     if (await redis.exists(REDIS_KEY)) response.send(
