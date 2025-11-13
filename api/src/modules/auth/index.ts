@@ -211,7 +211,7 @@ authRoutes.post(
       redis.setex(REDIS_KEY, FIVE_MINUTES_IN_MS, JSON.stringify(code)),
     ]);
 
-    return response.status(200).json();
+    return response.status(204).redirect('http://localhost:5173/home');
   }
 );
 

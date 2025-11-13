@@ -19,7 +19,11 @@ const { PORT } = env;
 app.use(express.json());
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: [
+      `https://${env.AUTH0_DOMAIN}`,
+      "http://localhost:3000",
+      "http://localhost:5173",
+    ],
     credentials: true,
   })
 );
