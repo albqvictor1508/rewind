@@ -21,19 +21,6 @@ services:
       - dragonflydata:/data
     command: ["--proactor_threads=4", "--maxmemory=1gb"]
 
-  minio:
-    image: minio/minio:latest
-    ports:
-      - "9003:9000" # API S3
-      - "9004:9001" # Web
-    environment:
-      MINIO_ROOT_USER: ${MINIO_SECRET_KEY}
-      MINIO_ROOT_PASSWORD: ${MINIO_ACCESS_KEY}
-    command: server /data --console-address ":9001"
-    volumes:
-      - minio-data:/data
-    restart: unless-stopped
-
 volumes:
    pg-data:
    dragonflydata:
