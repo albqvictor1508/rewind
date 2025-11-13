@@ -8,6 +8,10 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { signInSchema } from "@/utils/validators/signin-validator";
+import type { AxiosError, AxiosResponse } from "axios";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/_auth/signin")({
   component: RouteComponent,
@@ -15,8 +19,22 @@ export const Route = createFileRoute("/_auth/signin")({
 
 type SignUpSchema = z.infer<typeof signInSchema>;
 
+export function useSignIn() {
+  return useMutation<AxiosResponse, AxiosError, SignUpSchema>({
+    mutationFn: async (data: SignUpSchema) => {
+      const response = await axios.post(
+        "http://localhost:3000/auth/login",
+        data
+      );
+      return response.data;
+    },
+  });
+}
+
 export function RouteComponent() {
   const navigate = useNavigate();
+
+  const { mutate } = useSignIn();
 
   const {
     register,
@@ -27,15 +45,21 @@ export function RouteComponent() {
   });
 
   const onSubmit = (data: SignUpSchema) => {
-    console.log(data);
-
-    navigate({
-      to: "/home",
+    mutate(data, {
+      onSuccess: () => {
+        toast.success("Login realizado com sucesso!");
+        navigate({
+          to: "/home",
+        });
+      },
+      onError: () => {
+        toast.error("Email ou senha inválidos.");
+      },
     });
   };
 
   return (
-    <main className="w-full min-h-screen flex flex-col lg:flex-row items-center justify-center">
+    <main className="w-full h-screen flex flex-col lg:flex-row items-center justify-center">
       <section className="flex flex-col items-center justify-between py-6 lg:py-12 px-4 sm:px-8 w-full lg:w-1/2 min-h-screen bg-[#0a0a0a]">
         <Logo className="py-5" />
         <div className="flex flex-col items-center self-center grow bg-zinc-900 w-full max-w-2xl rounded-xl p-4 sm:p-6 lg:p-8 my-4 overflow-y-auto">

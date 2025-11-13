@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/logo";
@@ -8,12 +8,27 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signUpSchema } from "@/utils/validators/signup-validator";
+import axios, { AxiosError, type AxiosResponse } from "axios";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/_auth/signup")({
   component: RouteComponent,
 });
 
-type SignUpSchema = z.infer<typeof signUpSchema>;
+export type SignUpSchema = z.infer<typeof signUpSchema>;
+
+export function useSignUp() {
+  return useMutation<AxiosResponse, AxiosError, SignUpSchema>({
+    mutationFn: async (data: SignUpSchema) => {
+      const response = await axios.post(
+        "http://localhost:3000/auth/signup",
+        data
+      );
+      return response.data;
+    },
+  });
+}
 
 export function RouteComponent() {
   const {
@@ -24,8 +39,27 @@ export function RouteComponent() {
     resolver: zodResolver(signUpSchema),
   });
 
+  const { mutate } = useSignUp();
+  const navigate = useNavigate({ from: "/_auth/signup" });
+
   const onSubmit = (data: SignUpSchema) => {
-    console.log(data);
+    mutate(data, {
+      onSuccess: (res) => {
+        console.log(res.data);
+        navigate({
+          to: "/_auth/code",
+          search: {
+            email: data.email,
+            username: data.username,
+            password: data.password,
+          },
+        });
+      },
+      onError: (err: AxiosError) => {
+        toast.error(err.response?.data as string);
+        console.log(err);
+      },
+    });
   };
 
   return (
