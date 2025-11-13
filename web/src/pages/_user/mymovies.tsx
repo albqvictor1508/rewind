@@ -90,9 +90,9 @@ function RouteComponent() {
                       </div>
 
                       <div className="flex items-center gap-4 my-4">
-                        <span className="text-white text-sm">
+                        {/* <span className="text-white text-sm">
                           {m.genres.join(" / ")}
-                        </span>
+                        </span> */}
                         <div className="flex items-center gap-1">
                           <StarIcon className="text-yellow-400 w-5 h-5" />
                           <span className="text-white">{m.rate}</span>

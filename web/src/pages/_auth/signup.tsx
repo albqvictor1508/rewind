@@ -47,12 +47,7 @@ export function RouteComponent() {
       onSuccess: (res) => {
         console.log(res.data);
         navigate({
-          to: "/_auth/code",
-          search: {
-            email: data.email,
-            username: data.username,
-            password: data.password,
-          },
+          to: "/code",
         });
       },
       onError: (err: AxiosError) => {

@@ -1,5 +1,5 @@
 import { HomeMovies, type MovieProps } from "@/components/home-movies";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import axios, { AxiosError, type AxiosResponse } from "axios";
 import type { SignUpSchema } from "../_auth/signup";

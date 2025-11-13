@@ -10,16 +10,16 @@ export const Route = createFileRoute("/_app/search")({
 
 function RouteComponent() {
   const filteredMovies: MovieProps[] = [
-    {
-      title: "Coringa 2",
-      genres: ["Ação", "Drama"],
-      rate: 5,
-      photo: "/coringa-2.jpg",
-      marks: {
-        isFavorite: false,
-        status: "WANT_WATCH",
-      },
-    },
+    // {
+    //   title: "Coringa 2",
+    //   genres: ["Ação", "Drama"],
+    //   rate: 5,
+    //   photo: "/coringa-2.jpg",
+    //   marks: {
+    //     isFavorite: false,
+    //     status: "WANT_WATCH",
+    //   },
+    // },
   ];
 
   return (
