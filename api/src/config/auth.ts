@@ -61,8 +61,10 @@ export const auth = {
     if (NON_AUTH_ROUTES.includes(req.path)) return next();
 
     const token = req.cookies.movies_auth;
+    console.log('OK 1')
     if (!token) return res.status(401).json("Unauthorized");
 
+    console.log('OK 2')
     const user = this.verify(token);
 
     if (!user) return res.status(401).json("Unauthorized");

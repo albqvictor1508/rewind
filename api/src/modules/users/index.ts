@@ -5,7 +5,6 @@ import { db } from "src/db/client";
 import { users } from "src/db/schema/users";
 import { eq } from "drizzle-orm";
 import { Bucket } from "src/common/bucket";
-import z from "zod";
 import { env } from "src/common/env";
 
 export const userRoutes = Router();
