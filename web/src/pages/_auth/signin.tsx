@@ -9,7 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { signInSchema } from "@/utils/validators/signin-validator";
 import type { AxiosError, AxiosResponse } from "axios";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { toast } from "sonner";
 
@@ -31,10 +31,20 @@ export function useSignIn() {
   });
 }
 
+export function useGoogleSignIn() {
+  return useMutation({
+    mutationFn: async () => {
+      const response = await axios.get("http://localhost:3000/auth/google");
+      return response.data;
+    },
+  });
+}
+
 export function RouteComponent() {
   const navigate = useNavigate();
 
   const { mutate } = useSignIn();
+  const { data } = useGoogleSignIn();
 
   const {
     register,
@@ -57,6 +67,12 @@ export function RouteComponent() {
       },
     });
   };
+
+  async function handleGoogleLogin() {
+    const response = await axios.get("http://localhost:3000/auth/google");
+
+    return response;
+  }
 
   return (
     <main className="w-full h-screen flex flex-col lg:flex-row items-center justify-center">
@@ -134,6 +150,7 @@ export function RouteComponent() {
               <Button
                 className="p-6 flex-1 flex flex-row-reverse gap-2"
                 variant="outline"
+                onClick={handleGoogleLogin}
               >
                 <p className="text-sm">Sign in with Google</p>
                 <FcGoogle />
