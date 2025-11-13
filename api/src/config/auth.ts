@@ -58,7 +58,9 @@ export const auth = {
       "/auth/signup/:code",
     ];
 
-    if (NON_AUTH_ROUTES.includes(req.path)) return next();
+    if (NON_AUTH_ROUTES.some(route => req.originalUrl.startsWith(route))) {
+      return next();
+    }
 
     console.log("cookies =>", req.cookies);
     console.log("movies_auth =>", req.cookies.movies_auth);
