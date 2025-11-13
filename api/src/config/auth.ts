@@ -60,6 +60,8 @@ export const auth = {
 
     if (NON_AUTH_ROUTES.includes(req.path)) return next();
 
+    console.log("cookies =>", req.cookies);
+    console.log("movies_auth =>", req.cookies.movies_auth);
     const token = req.cookies.movies_auth;
     console.log('OK 1')
     if (!token) return res.status(401).json("Unauthorized");
