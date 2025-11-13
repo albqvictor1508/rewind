@@ -50,31 +50,31 @@ export const auth = {
 
   sign,
 
-  authenticate(req: Request, res: Response, next: NextFunction) {
+
+  authenticate(req, res, next) {
     const NON_AUTH_ROUTES = [
       "/health",
       "/auth/signup",
       "/auth/login",
-      "/auth/signup/:code",
+      "/auth/signup/",
     ];
 
-    if (NON_AUTH_ROUTES.some(route => req.originalUrl.startsWith(route))) {
+    const url = req.originalUrl;
+
+    if (NON_AUTH_ROUTES.some(route => url.startsWith(route))) {
       return next();
     }
 
-    console.log("cookies =>", req.cookies);
-    console.log("movies_auth =>", req.cookies.movies_auth);
     const token = req.cookies.movies_auth;
-    console.log('OK 1')
+
     if (!token) return res.status(401).json("Unauthorized");
 
-    console.log('OK 2')
     const user = this.verify(token);
 
     if (!user) return res.status(401).json("Unauthorized");
 
-    // @ts-expect-error
     req.user = user;
     next();
   }
+
 }
