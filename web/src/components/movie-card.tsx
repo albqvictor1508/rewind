@@ -1,6 +1,7 @@
 import { StarIcon } from "lucide-react";
-import type { MovieProps } from "./home-movies";
+import type { MovieProps, StatusEnum } from "./home-movies";
 import { Button } from "./ui/button";
+import axios from "axios";
 
 type MovieCardProps = {
   movie: MovieProps;
@@ -8,6 +9,10 @@ type MovieCardProps = {
   cardHeight?: number;
 };
 export const MovieCard = ({ movie, cardHeight, cardWidth }: MovieCardProps) => {
+  async function handleMark(movieId: string, status: StatusEnum) {
+    await axios.put("http://localhost:3000/movieMarks/mark");
+  }
+
   return (
     <div
       style={{ width: cardWidth ?? 300, height: cardHeight ?? 400 }}
@@ -46,7 +51,13 @@ export const MovieCard = ({ movie, cardHeight, cardWidth }: MovieCardProps) => {
         </div>
 
         <div className="w-full flex flex-col gap-2 pt-4">
-          <Button variant="outline" className="flex-1">
+          <Button
+            variant="outline"
+            className="flex-1"
+            onClick={() => {
+              handleMark(movie.id, "WATCHED");
+            }}
+          >
             Já assisti
           </Button>
           <Button variant="outline" className="flex-1">

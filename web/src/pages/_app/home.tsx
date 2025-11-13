@@ -25,36 +25,18 @@ export function useMovies() {
 }
 
 export function RouteComponent() {
-  const { data, error, isLoading } = useMovies();
-  const [categories1, setCategories] = useState<Categories>([]);
-
-  const categories: Categories = [
-    {
-      name: "Drama",
-      movies: [
-        {
-          title: "Batman",
-          rate: 4.4,
-          photo: "/batman.jpg",
-          genres: ["salve", "teste"],
-          marks: {
-            isFavorite: true,
-            status: "WATCHED",
-          },
-        },
-      ],
-    },
-  ];
+  const { data } = useMovies();
+  const [categories, setCategories] = useState<Categories>([]);
 
   useEffect(() => {
     if (data) {
       setCategories(data);
     }
-  });
+  }, [data]);
 
   return (
     <div className="w-full h-full flex flex-col px-8 space-y-12">
-      {categories1?.map((category) => (
+      {categories?.map((category) => (
         <div
           className="flex flex-col space-y-4"
           key={category.name + "-" + new Date()}

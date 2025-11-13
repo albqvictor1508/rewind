@@ -2,180 +2,34 @@ import { Button } from "@/components/ui/button";
 import { createFileRoute } from "@tanstack/react-router";
 import { FaRegFaceSadCry } from "react-icons/fa6";
 import { StarIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import type { MovieProps } from "@/components/home-movies";
 
 export const Route = createFileRoute("/_user/mymovies")({
   component: RouteComponent,
 });
 
+export function useMovies() {
+  return useQuery({
+    queryKey: ["movies"],
+    queryFn: async () => {
+      const response = await axios.get("http://localhost:3000/users/movies");
+      return response.data;
+    },
+  });
+}
+
 function RouteComponent() {
-  const moviesObj = [
-    {
-      title: "Batman",
-      photo: "/batman.jpg",
-      rate: 4.8,
-      genres: ["Ação", "Herói"],
-      marks: {
-        isFavorite: true,
-        status: "WATCHED",
-      },
-    },
-    {
-      title: "Homem Aranha",
-      photo: "/aranha.jpg",
-      rate: 4.7,
-      genres: ["Ação", "Herói"],
-      marks: {
-        isFavorite: true,
-        status: "WATCHING",
-      },
-    },
-    {
-      title: "Flash",
-      photo: "/flash.jpg",
-      rate: 4.5,
-      genres: ["Ação", "Herói"],
-      marks: {
-        isFavorite: false,
-        status: "TO_WATCH",
-      },
-    },
-    {
-      title: "Coringa",
-      photo: "/coringa.jpg",
-      rate: 4.9,
-      genres: ["Vilão", "Drama"],
-      marks: {
-        isFavorite: true,
-        status: "WATCHED",
-      },
-    },
-    {
-      title: "Coringa 2",
-      photo: "/coringa-2.jpg",
-      rate: 5.0,
-      genres: ["Vilão", "Musical"],
-      marks: {
-        isFavorite: true,
-        status: "TO_WATCH",
-      },
-    },
-    {
-      title: "Thanos",
-      photo: "/thanos.jpg",
-      rate: 4.8,
-      genres: ["Vilão", "Ficção"],
-      marks: {
-        isFavorite: false,
-        status: "WATCHED",
-      },
-    },
-    {
-      title: "Thanos 2",
-      photo: "/thanos-2.jpg",
-      rate: 4.7,
-      genres: ["Vilão", "Ficção"],
-      marks: {
-        isFavorite: false,
-        status: "WATCHED",
-      },
-    },
-    {
-      title: "Comédia 1",
-      photo: "https://source.unsplash.com/500x500/?comedy",
-      rate: 3.2,
-      genres: ["Comédia"],
-      marks: {
-        isFavorite: false,
-        status: "TO_WATCH",
-      },
-    },
-    {
-      title: "Comédia 2",
-      photo: "https://source.unsplash.com/500x501/?comedy",
-      rate: 2.1,
-      genres: ["Comédia"],
-      marks: {
-        isFavorite: false,
-        status: "TO_WATCH",
-      },
-    },
-    {
-      title: "Comédia 3",
-      photo: "https://source.unsplash.com/501x500/?comedy",
-      rate: 4.1,
-      genres: ["Comédia"],
-      marks: {
-        isFavorite: false,
-        status: "TO_WATCH",
-      },
-    },
-    {
-      title: "Drama 1",
-      photo: "https://source.unsplash.com/500x500/?drama",
-      rate: 4.9,
-      genres: ["Drama"],
-      marks: {
-        isFavorite: true,
-        status: "WATCHED",
-      },
-    },
-    {
-      title: "Drama 2",
-      photo: "https://source.unsplash.com/500x501/?drama",
-      rate: 4.2,
-      genres: ["Drama"],
-      marks: {
-        isFavorite: false,
-        status: "WATCHED",
-      },
-    },
-    {
-      title: "Sci-Fi 1",
-      photo: "https://source.unsplash.com/500x500/?scifi",
-      rate: 4.9,
-      genres: ["Ficção"],
-      marks: {
-        isFavorite: true,
-        status: "WATCHED",
-      },
-    },
-    {
-      title: "Sci-Fi 2",
-      photo: "https://source.unsplash.com/501x500/?scifi",
-      rate: 4.9,
-      genres: ["Ficção"],
-      marks: {
-        isFavorite: true,
-        status: "WATCHED",
-      },
-    },
-    {
-      title: "Sci-Fi 3",
-      photo: "https://source.unsplash.com/500x501/?scifi",
-      rate: 4.9,
-      genres: ["Ficção"],
-      marks: {
-        isFavorite: true,
-        status: "WATCHED",
-      },
-    },
-  ];
+  const { data } = useMovies();
+  const [movies, setMovies] = useState<MovieProps[]>([]);
 
-  const [movies, setMovies] = useState([]);
-
-  const toggleFavorite = (title: string) => {
-    setMovies((prevMovies) => {
-      prevMovies.map((movie) => {
-        movie.title === title
-          ? {
-              ...movie,
-              marks: { ...movie.marks, isFavorite: !movie.marks.isFavorite },
-            }
-          : movie;
-      });
-    });
-  };
+  useEffect(() => {
+    if (data) {
+      setMovies(data);
+    }
+  });
 
   return (
     <section className="w-screen flex justify-center">
@@ -228,16 +82,10 @@ function RouteComponent() {
                         <h3 className="font-semibold text-2xl text-white">
                           {m.title}
                         </h3>
-                        <Button
-                          variant={"outline"}
-                          className="rounded-full"
-                          onClick={() => {
-                            toggleFavorite(m.title);
-                          }}
-                        >
-                          <StarIcon
+                        <Button variant={"outline"} className="rounded-full">
+                          {/* <StarIcon
                             className={`w-6 h-6 text-white ${m.marks.isFavorite ? "fill-yellow-400 text-yellow-400" : ""}`}
-                          />
+                          /> */}
                         </Button>
                       </div>
 
