@@ -15,6 +15,7 @@ userRoutes.get(
   async (request, response) => {
     // @ts-expect-error
     const { id: userId } = request.user;
+    if (!userId) return response.status(500).send('error to find user')
 
     const movies = UserService.getUserMovies(userId);
     return response.json(movies);
